@@ -1,9 +1,16 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import dotenv from 'dotenv';
 import { sequelize, testConnection } from './database/connection';
+import { connectRedis } from './config/redis';
 import { localizationMiddleware } from './middleware/localization.middleware';
 import { tenantMiddleware } from './middleware/tenant.middleware';
+import {
+  performanceMiddleware,
+  requestSizeLimiter,
+  queryComplexityLimiter,
+} from './middleware/performance.middleware';
 import routes from './routes';
 import { setupAssociations } from './models/associations';
 setupAssociations();
@@ -13,9 +20,18 @@ dotenv.config({ path: '.env' });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(express.json());
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
+// Performance & Security Middleware
+app.use(compression()); // Compress responses
+app.use(express.json({ limit: '10mb' })); // Limit JSON payload
+app.use(requestSizeLimiter(10)); // Limit request size to 10MB
+app.use(queryComplexityLimiter); // Prevent complex queries
+app.use(performanceMiddleware); // Track response times
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Localization middleware - must be before routes
 app.use(localizationMiddleware);
@@ -37,6 +53,11 @@ const startServer = async () => {
     // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) throw new Error('Database connection failed');
+
+    // Connect to Redis (optional - system works without it)
+    await connectRedis().catch((err) => {
+      console.warn('⚠️  Starting without Redis cache');
+    });
 
     // Note: Using alter: false to prevent automatic schema changes
     // Run database-migration.sql manually in Supabase for schema updates

@@ -13,8 +13,8 @@ export const sequelize = new Sequelize(
     dialect: 'postgres',
     logging: false, // Set to console.log for debugging
     pool: {
-      max: 5,
-      min: 0,
+      max: 50,
+      min: 10,
       acquire: 30000,
       idle: 10000,
     },

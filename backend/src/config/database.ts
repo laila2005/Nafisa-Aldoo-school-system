@@ -12,8 +12,8 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   pool: {
-    max: 5,
-    min: 0,
+    max: 50,
+    min: 10,
     acquire: 30000,
     idle: 10000,
   },
