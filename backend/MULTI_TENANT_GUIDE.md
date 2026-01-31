@@ -17,6 +17,7 @@ Your school management system has been converted into a **multi-tenant SaaS plat
 ## Architecture: Shared Database with Row-Level Security
 
 **Benefits:**
+
 - ✅ Lower infrastructure costs
 - ✅ Easy to manage and scale
 - ✅ Automatic data isolation
@@ -24,6 +25,7 @@ Your school management system has been converted into a **multi-tenant SaaS plat
 - ✅ Perfect for SaaS business model
 
 **How it works:**
+
 ```
 Single PostgreSQL Database
 ├── School 1 (Nafisa Aldoo)
@@ -49,14 +51,14 @@ CREATE TABLE schools (
     name VARCHAR(255) NOT NULL,
     name_ar VARCHAR(255),
     code VARCHAR(50) UNIQUE NOT NULL,
-    
+
     -- Contact Info
     address TEXT,
     phone VARCHAR(50),
     email VARCHAR(255),
     website VARCHAR(255),
     logo VARCHAR(255),
-    
+
     -- Subscription Management
     subscription_status VARCHAR(20) DEFAULT 'TRIAL',
         -- ACTIVE, SUSPENDED, TRIAL, EXPIRED
@@ -64,16 +66,16 @@ CREATE TABLE schools (
         -- FREE, BASIC, PREMIUM, ENTERPRISE
     subscription_start_date DATE,
     subscription_end_date DATE,
-    
+
     -- Resource Limits
     max_students INTEGER DEFAULT 50,
     max_teachers INTEGER DEFAULT 10,
     max_storage INTEGER DEFAULT 1000, -- in MB
-    
+
     -- Configuration
     settings JSONB,
     is_active BOOLEAN DEFAULT true,
-    
+
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -82,11 +84,13 @@ CREATE TABLE schools (
 ### All Tables Now Include `school_id`
 
 Every tenant-specific table has:
+
 ```sql
 school_id UUID REFERENCES schools(id) ON DELETE CASCADE
 ```
 
 **Tables with school_id:**
+
 - users
 - courses
 - academic_years
@@ -119,27 +123,31 @@ PostgreSQL automatically filters all queries by school_id using RLS policies.
 ### How RLS Works
 
 1. **Application sets school context:**
+
    ```sql
    SET LOCAL app.current_school_id = 'school-uuid';
    ```
 
 2. **PostgreSQL enforces policy:**
+
    ```sql
    CREATE POLICY tenant_isolation_policy ON users
    USING (school_id = current_setting('app.current_school_id')::UUID);
    ```
 
 3. **All queries auto-filtered:**
+
    ```sql
    -- When you query:
    SELECT * FROM users;
-   
+
    -- PostgreSQL actually runs:
-   SELECT * FROM users 
+   SELECT * FROM users
    WHERE school_id = 'current-school-uuid';
    ```
 
 **Security Benefits:**
+
 - ✅ No manual WHERE clauses needed
 - ✅ Impossible to access other schools' data
 - ✅ Works with ORMs automatically
@@ -175,6 +183,7 @@ app.use('/api', routes);
 ```
 
 **The tenant middleware:**
+
 - Reads `schoolId` from authenticated user
 - Sets PostgreSQL session variable
 - Automatically filters all queries
@@ -185,16 +194,19 @@ app.use('/api', routes);
 
 ```typescript
 // When user logs in
-const user = await User.findOne({ 
-  where: { email, schoolId } // ← Include schoolId
+const user = await User.findOne({
+  where: { email, schoolId }, // ← Include schoolId
 });
 
 // JWT token includes school
-const token = jwt.sign({
-  userId: user.id,
-  schoolId: user.schoolId, // ← Add this
-  role: user.role
-}, JWT_SECRET);
+const token = jwt.sign(
+  {
+    userId: user.id,
+    schoolId: user.schoolId, // ← Add this
+    role: user.role,
+  },
+  JWT_SECRET
+);
 ```
 
 ---
@@ -237,7 +249,7 @@ const teacher = await User.create({
 // Tenant middleware already set school context
 // This ONLY returns users from current school
 const teachers = await User.findAll({
-  where: { role: 'TEACHER' }
+  where: { role: 'TEACHER' },
 });
 // No need for: where: { schoolId, role: 'TEACHER' }
 ```
@@ -248,21 +260,21 @@ const teachers = await User.findAll({
 
 ### Plan Limits
 
-| Feature | FREE | BASIC | PREMIUM | ENTERPRISE |
-|---------|------|-------|---------|------------|
-| Students | 50 | 200 | 1000 | Unlimited |
-| Teachers | 10 | 50 | 200 | Unlimited |
-| Storage | 1 GB | 10 GB | 50 GB | 500 GB |
-| Support | Email | Email | Priority | Dedicated |
-| Price/mo | $0 | $49 | $199 | Custom |
+| Feature  | FREE  | BASIC | PREMIUM  | ENTERPRISE |
+| -------- | ----- | ----- | -------- | ---------- |
+| Students | 50    | 200   | 1000     | Unlimited  |
+| Teachers | 10    | 50    | 200      | Unlimited  |
+| Storage  | 1 GB  | 10 GB | 50 GB    | 500 GB     |
+| Support  | Email | Email | Priority | Dedicated  |
+| Price/mo | $0    | $49   | $199     | Custom     |
 
 ### Enforcing Limits
 
 ```typescript
 // Check before adding student
 const school = await School.findByPk(req.schoolId);
-const studentCount = await User.count({ 
-  where: { role: 'STUDENT' } 
+const studentCount = await User.count({
+  where: { role: 'STUDENT' },
 });
 
 if (studentCount >= school.maxStudents) {
@@ -275,6 +287,7 @@ if (studentCount >= school.maxStudents) {
 ## Security Best Practices
 
 ### ✅ DO:
+
 - Always use tenant middleware on protected routes
 - Let RLS handle data filtering
 - Include schoolId in JWT tokens
@@ -282,6 +295,7 @@ if (studentCount >= school.maxStudents) {
 - Log cross-tenant access attempts
 
 ### ❌ DON'T:
+
 - Skip tenant middleware on any protected route
 - Manually add WHERE school_id clauses (RLS does this)
 - Share credentials between schools
@@ -319,7 +333,7 @@ SELECT * FROM users; -- Should only see School 2 users
 # Login as School 1 user
 curl -X POST /api/auth/login \
   -d '{"email":"user@school1.com","password":"..."}'
-  
+
 # Use token in requests
 curl -H "Authorization: Bearer TOKEN" /api/users
 # Should only return School 1 users
@@ -334,9 +348,9 @@ curl -H "Authorization: Bearer TOKEN" /api/users
 ```typescript
 // Dashboard for each school
 const stats = {
-  totalStudents: await User.count({ where: { role: 'STUDENT' }}),
-  totalTeachers: await User.count({ where: { role: 'TEACHER' }}),
-  activeCourses: await Course.count({ where: { isActive: true }}),
+  totalStudents: await User.count({ where: { role: 'STUDENT' } }),
+  totalTeachers: await User.count({ where: { role: 'TEACHER' } }),
+  activeCourses: await Course.count({ where: { isActive: true } }),
   storageUsed: await calculateStorageUsage(schoolId),
 };
 ```
@@ -347,7 +361,7 @@ const stats = {
 -- Disable RLS for super admin queries
 SET LOCAL row_security = off;
 
-SELECT 
+SELECT
   s.name,
   COUNT(DISTINCT u.id) FILTER (WHERE u.role = 'STUDENT') as students,
   COUNT(DISTINCT u.id) FILTER (WHERE u.role = 'TEACHER') as teachers,
@@ -386,7 +400,7 @@ if (school.subscriptionStatus !== 'ACTIVE') {
 
 - [ ] Run `database-migration-multitenant.sql` in Supabase
 - [ ] Update User model to include schoolId
-- [ ] Update Course model to include schoolId  
+- [ ] Update Course model to include schoolId
 - [ ] Add tenant middleware to index.ts
 - [ ] Update JWT to include schoolId
 - [ ] Update login/register to handle schools
@@ -413,6 +427,7 @@ if (school.subscriptionStatus !== 'ACTIVE') {
 ## Support
 
 For questions or issues:
+
 - Check logs: `app.use(morgan('dev'))`
 - Verify RLS: `SELECT * FROM pg_policies;`
 - Test isolation: Create two test schools

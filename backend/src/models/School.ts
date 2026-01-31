@@ -24,7 +24,19 @@ interface SchoolAttributes {
   updatedAt?: Date;
 }
 
-interface SchoolCreationAttributes extends Optional<SchoolAttributes, 'id' | 'nameAr' | 'address' | 'phone' | 'email' | 'website' | 'logo' | 'subscriptionStartDate' | 'subscriptionEndDate' | 'settings'> {}
+interface SchoolCreationAttributes extends Optional<
+  SchoolAttributes,
+  | 'id'
+  | 'nameAr'
+  | 'address'
+  | 'phone'
+  | 'email'
+  | 'website'
+  | 'logo'
+  | 'subscriptionStartDate'
+  | 'subscriptionEndDate'
+  | 'settings'
+> {}
 
 class School extends Model<SchoolAttributes, SchoolCreationAttributes> implements SchoolAttributes {
   declare id: string;

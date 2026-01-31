@@ -36,7 +36,7 @@ export function setupAssociations(): void {
   // ==========================================
   // MULTI-TENANT RELATIONSHIPS
   // ==========================================
-  
+
   // School has many users
   School.hasMany(User, { foreignKey: 'schoolId', as: 'users' });
   User.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });

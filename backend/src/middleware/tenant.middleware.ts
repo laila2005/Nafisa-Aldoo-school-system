@@ -18,29 +18,25 @@ declare global {
 
 /**
  * Multi-Tenant Middleware
- * 
+ *
  * Automatically sets the school context for all database queries based on the authenticated user's school.
  * This ensures data isolation between different schools (tenants) using Row-Level Security.
- * 
+ *
  * Usage:
  * 1. Apply after authentication middleware
  * 2. Sets PostgreSQL session variable: app.current_school_id
  * 3. Row-Level Security policies automatically filter queries by school_id
- * 
+ *
  * @example
  * app.use(authMiddleware);
  * app.use(tenantMiddleware);
  * app.use('/api', routes);
  */
-export const tenantMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const tenantMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Skip tenant middleware for public routes
     const publicRoutes = ['/health', '/api/auth/login', '/api/auth/register'];
-    if (publicRoutes.some(route => req.path.startsWith(route))) {
+    if (publicRoutes.some((route) => req.path.startsWith(route))) {
       return next();
     }
 
@@ -56,9 +52,7 @@ export const tenantMiddleware = async (
 
     // Set PostgreSQL session variable for Row-Level Security
     // This makes all queries automatically filter by school_id
-    await sequelize.query(
-      `SET LOCAL app.current_school_id = '${schoolId}'`
-    );
+    await sequelize.query(`SET LOCAL app.current_school_id = '${schoolId}'`);
 
     // Also attach to request object for application use
     req.schoolId = schoolId;
@@ -75,18 +69,14 @@ export const tenantMiddleware = async (
 
 /**
  * Super Admin Middleware
- * 
+ *
  * Bypasses tenant isolation for super admin users who can access all schools.
  * Use sparingly and only for admin panels/support tools.
- * 
+ *
  * @example
  * app.use('/api/admin', superAdminMiddleware);
  */
-export const superAdminMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const superAdminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Check if user is super admin
     if (req.user?.role !== 'SUPER_ADMIN') {
@@ -111,23 +101,19 @@ export const superAdminMiddleware = async (
 
 /**
  * School Switcher Middleware (for demo/testing)
- * 
+ *
  * Allows switching between schools using a header.
  * ONLY USE IN DEVELOPMENT! Remove in production.
- * 
+ *
  * Usage: Add X-School-Id header to requests
  */
-export const schoolSwitcherMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const schoolSwitcherMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === 'production') {
     return next();
   }
 
   const headerSchoolId = req.headers['x-school-id'] as string;
-  
+
   if (headerSchoolId && req.user) {
     req.user.schoolId = headerSchoolId;
     req.schoolId = headerSchoolId;
