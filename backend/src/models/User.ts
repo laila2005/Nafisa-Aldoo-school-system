@@ -4,33 +4,33 @@ import sequelize from '../config/database.js';
 import { UserRole } from '../types/index.js';
 
 interface UserAttributes {
-  id: number;
+  id: string;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   role: UserRole;
-  phoneNumber?: string;
-  address?: string;
-  dateOfBirth?: Date;
+  phone?: string;
+  profilePicture?: string;
   isActive: boolean;
+  lastLogin?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isActive'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isActive' | 'lastLogin'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  declare id: number;
+  declare id: string;
   declare email: string;
   declare password: string;
   declare firstName: string;
   declare lastName: string;
   declare role: UserRole;
-  declare phoneNumber?: string;
-  declare address?: string;
-  declare dateOfBirth?: Date;
+  declare phone?: string;
+  declare profilePicture?: string;
   declare isActive: boolean;
+  declare lastLogin?: Date;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
@@ -38,8 +38,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     email: {
@@ -66,21 +66,21 @@ User.init(
       type: DataTypes.ENUM(...Object.values(UserRole)),
       allowNull: false,
     },
-    phoneNumber: {
+    phone: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    address: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    dateOfBirth: {
-      type: DataTypes.DATEONLY,
+    profilePicture: {
+      type: DataTypes.STRING(500),
       allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    lastLogin: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
