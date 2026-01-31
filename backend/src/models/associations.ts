@@ -26,7 +26,7 @@ import {
 /**
  * Setup all model associations/relationships
  * This should be called once when the application starts
- * 
+ *
  * NOTE: Existing models (Course, Enrollment, Attendance, Grade, Message)
  * already have their associations defined in their respective files.
  * This file only sets up associations for NEW models.
