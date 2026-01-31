@@ -4,6 +4,14 @@ import dotenv from 'dotenv';
 import { connectDatabase, syncDatabase } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 
+// Import all models to ensure they're registered with Sequelize
+import './models/User.js';
+import './models/Course.js';
+import './models/Enrollment.js';
+import './models/Attendance.js';
+import './models/Grade.js';
+import './models/Message.js';
+
 // Load environment variables
 dotenv.config();
 
