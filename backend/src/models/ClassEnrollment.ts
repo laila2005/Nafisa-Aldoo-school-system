@@ -1,8 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../database/connection';
-import { User } from './User';
-import { ClassSection } from './ClassSection';
-import { AcademicYear } from './AcademicYear';
+import { sequelize } from '../database/connection.js';
+import { User } from './User.js';
+import { ClassSection } from './ClassSection.js';
+import { AcademicYear } from './AcademicYear.js';
 
 export class ClassEnrollment extends Model {
   public id!: string;

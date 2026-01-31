@@ -1,28 +1,28 @@
 // Existing models
-export { User } from './User';
-export { Course } from './Course';
-export { Enrollment } from './Enrollment';
-export { Attendance } from './Attendance';
-export { Grade } from './Grade';
-export { Message } from './Message';
+export { User } from './User.js';
+export { Course } from './Course.js';
+export { Enrollment } from './Enrollment.js';
+export { Attendance } from './Attendance.js';
+export { Grade } from './Grade.js';
+export { Message } from './Message.js';
 
 // Multi-tenant model
-export { default as School } from './School';
+export { default as School } from './School.js';
 
 // New models
-export { AcademicYear } from './AcademicYear';
-export { Subject } from './Subject';
-export { ClassSection } from './ClassSection';
-export { ClassEnrollment } from './ClassEnrollment';
-export { CourseMaterial } from './CourseMaterial';
-export { Assignment } from './Assignment';
-export { AssignmentSubmission } from './AssignmentSubmission';
-export { Announcement } from './Announcement';
-export { Event } from './Event';
-export { ParentStudentRelation } from './ParentStudentRelation';
-export { Notification } from './Notification';
-export { AuditLog } from './AuditLog';
-export { Settings } from './Settings';
-export { ReportCard } from './ReportCard';
-export { LeaveRequest } from './LeaveRequest';
-export { FeePayment } from './FeePayment';
+export { AcademicYear } from './AcademicYear.js';
+export { Subject } from './Subject.js';
+export { ClassSection } from './ClassSection.js';
+export { ClassEnrollment } from './ClassEnrollment.js';
+export { CourseMaterial } from './CourseMaterial.js';
+export { Assignment } from './Assignment.js';
+export { AssignmentSubmission } from './AssignmentSubmission.js';
+export { Announcement } from './Announcement.js';
+export { Event } from './Event.js';
+export { ParentStudentRelation } from './ParentStudentRelation.js';
+export { Notification } from './Notification.js';
+export { AuditLog } from './AuditLog.js';
+export { Settings } from './Settings.js';
+export { ReportCard } from './ReportCard.js';
+export { LeaveRequest } from './LeaveRequest.js';
+export { FeePayment } from './FeePayment.js';

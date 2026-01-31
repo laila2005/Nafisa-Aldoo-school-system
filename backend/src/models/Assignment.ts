@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../database/connection';
-import { Course } from './Course';
-import { User } from './User';
+import { sequelize } from '../database/connection.js';
+import { Course } from './Course.js';
+import { User } from './User.js';
 
 export class Assignment extends Model {
   public id!: string;

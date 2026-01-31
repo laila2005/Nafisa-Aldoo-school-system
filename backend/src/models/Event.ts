@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../database/connection';
-import { User } from './User';
+import { sequelize } from '../database/connection.js';
+import { User } from './User.js';
 
 export class Event extends Model {
   public id!: string;
