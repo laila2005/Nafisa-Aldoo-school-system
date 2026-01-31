@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { sequelize, testConnection } from './database/connection';
 import { localizationMiddleware } from './middleware/localization.middleware';
 import routes from './routes';
+import { setupAssociations } from './models/associations';
+setupAssociations();
 
 dotenv.config({ path: '.env' });
 
@@ -32,9 +34,10 @@ const startServer = async () => {
     const isConnected = await testConnection();
     if (!isConnected) throw new Error('Database connection failed');
 
-    // Sync models with database
-    await sequelize.sync({ alter: true });
-    console.log('✓ Models synced with database');
+    // Note: Using alter: false to prevent automatic schema changes
+    // Run database-migration.sql manually in Supabase for schema updates
+    await sequelize.sync({ alter: false });
+    console.log('✓ Database connection verified');
 
     app.listen(PORT, () => {
       console.log(`✓ Server running on http://localhost:${PORT}`);

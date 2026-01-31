@@ -12,6 +12,23 @@ export class User extends Model {
   public profilePicture?: string;
   public isActive!: boolean;
   public lastLogin?: Date;
+
+  // Additional fields
+  public dateOfBirth?: Date;
+  public gender?: string;
+  public address?: string;
+  public city?: string;
+  public state?: string;
+  public postalCode?: string;
+  public country?: string;
+  public profilePictureUrl?: string;
+  public bio?: string;
+  public employeeId?: string;
+  public studentId?: string;
+  public qualification?: string;
+  public experienceYears?: number;
+  public emergencyContactName?: string;
+  public emergencyContactPhone?: string;
 }
 
 User.init(
@@ -54,6 +71,51 @@ User.init(
     },
     lastLogin: {
       type: DataTypes.DATE,
+    },
+    dateOfBirth: {
+      type: DataTypes.DATEONLY,
+    },
+    gender: {
+      type: DataTypes.STRING(20),
+    },
+    address: {
+      type: DataTypes.TEXT,
+    },
+    city: {
+      type: DataTypes.STRING(100),
+    },
+    state: {
+      type: DataTypes.STRING(100),
+    },
+    postalCode: {
+      type: DataTypes.STRING(20),
+    },
+    country: {
+      type: DataTypes.STRING(100),
+    },
+    profilePictureUrl: {
+      type: DataTypes.STRING(500),
+    },
+    bio: {
+      type: DataTypes.TEXT,
+    },
+    employeeId: {
+      type: DataTypes.STRING(50),
+    },
+    studentId: {
+      type: DataTypes.STRING(50),
+    },
+    qualification: {
+      type: DataTypes.STRING(255),
+    },
+    experienceYears: {
+      type: DataTypes.INTEGER,
+    },
+    emergencyContactName: {
+      type: DataTypes.STRING(100),
+    },
+    emergencyContactPhone: {
+      type: DataTypes.STRING(20),
     },
   },
   {
