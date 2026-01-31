@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { sequelize, testConnection } from './database/connection';
 import { localizationMiddleware } from './middleware/localization.middleware';
+import { tenantMiddleware } from './middleware/tenant.middleware';
 import routes from './routes';
 import { setupAssociations } from './models/associations';
 setupAssociations();
@@ -18,6 +19,9 @@ app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 
 // Localization middleware - must be before routes
 app.use(localizationMiddleware);
+
+// Multi-tenant middleware - sets school context for each request
+app.use(tenantMiddleware);
 
 // Routes
 app.use('/api', routes);

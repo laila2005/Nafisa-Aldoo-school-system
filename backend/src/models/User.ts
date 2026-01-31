@@ -3,6 +3,7 @@ import { sequelize } from '../database/connection';
 
 export class User extends Model {
   public id!: string;
+  public schoolId!: string; // Multi-tenant: links user to their school
   public email!: string;
   public password!: string;
   public firstName!: string;
@@ -37,6 +38,16 @@ User.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    schoolId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      field: 'school_id',
+      references: {
+        model: 'schools',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     email: {
       type: DataTypes.STRING,

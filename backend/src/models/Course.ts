@@ -4,6 +4,7 @@ import { User } from './User';
 
 export class Course extends Model {
   public id!: string;
+  public schoolId!: string;
   public name!: string;
   public code!: string;
   public description?: string;
@@ -21,6 +22,16 @@ Course.init(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    schoolId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      field: 'school_id',
+      references: {
+        model: 'schools',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     name: {
       type: DataTypes.STRING,

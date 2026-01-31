@@ -5,7 +5,9 @@ export interface AuthRequest extends Request {
     id: string;
     email: string;
     role: UserRole;
+    schoolId: string;
   };
+  schoolId?: string;
 }
 
 export enum UserRole {

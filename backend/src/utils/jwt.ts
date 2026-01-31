@@ -9,6 +9,7 @@ export interface JwtPayload {
   id: string;
   email: string;
   role: UserRole;
+  schoolId: string;
 }
 
 export const generateToken = (payload: JwtPayload): string => {

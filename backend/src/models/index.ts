@@ -6,6 +6,9 @@ export { Attendance } from './Attendance';
 export { Grade } from './Grade';
 export { Message } from './Message';
 
+// Multi-tenant model
+export { default as School } from './School';
+
 // New models
 export { AcademicYear } from './AcademicYear';
 export { Subject } from './Subject';

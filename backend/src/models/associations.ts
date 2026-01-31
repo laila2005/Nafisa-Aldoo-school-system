@@ -5,6 +5,7 @@ import {
   Attendance,
   Grade,
   Message,
+  School,
   AcademicYear,
   Subject,
   ClassSection,
@@ -32,6 +33,30 @@ import {
  * This file only sets up associations for NEW models.
  */
 export function setupAssociations(): void {
+  // ==========================================
+  // MULTI-TENANT RELATIONSHIPS
+  // ==========================================
+  
+  // School has many users
+  School.hasMany(User, { foreignKey: 'schoolId', as: 'users' });
+  User.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });
+
+  // School has many courses
+  School.hasMany(Course, { foreignKey: 'schoolId', as: 'courses' });
+  Course.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });
+
+  // School has many academic years
+  School.hasMany(AcademicYear, { foreignKey: 'schoolId', as: 'academicYears' });
+  AcademicYear.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });
+
+  // School has many subjects
+  School.hasMany(Subject, { foreignKey: 'schoolId', as: 'subjects' });
+  Subject.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });
+
+  // School has many class sections
+  School.hasMany(ClassSection, { foreignKey: 'schoolId', as: 'classSections' });
+  ClassSection.belongsTo(School, { foreignKey: 'schoolId', as: 'school' });
+
   // ==========================================
   // USER RELATIONSHIPS (for new models only)
   // ==========================================
