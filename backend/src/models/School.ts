@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../database/connection';
+import { DataTypes, Model } from 'sequelize';
+import type { Optional } from 'sequelize';
+import { sequelize } from '../database/connection.js';
 
 interface SchoolAttributes {
   id: string;

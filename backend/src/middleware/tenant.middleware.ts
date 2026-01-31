@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { sequelize } from '../database/connection';
+import type { Request, Response, NextFunction } from 'express';
+import { sequelize } from '../database/connection.js';
 
 // Extend Express Request type to include schoolId
 declare global {
