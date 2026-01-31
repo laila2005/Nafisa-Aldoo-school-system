@@ -1,0 +1,39 @@
+{
+  "auth": {
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "registerSuccess": "تم تسجيل المستخدم بنجاح",
+    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
+    "emailExists": "المستخدم بهذا البريد الإلكتروني موجود بالفعل",
+    "userNotFound": "المستخدم غير موجود",
+    "accountInactive": "الحساب غير نشط"
+  },
+  "courses": {
+    "courseCreated": "تم إنشاء الدورة بنجاح",
+    "courseUpdated": "تم تحديث الدورة بنجاح",
+    "courseDeleted": "تم حذف الدورة بنجاح",
+    "courseNotFound": "الدورة غير موجودة",
+    "studentEnrolled": "تم تسجيل الطالب بنجاح",
+    "alreadyEnrolled": "الطالب مسجل بالفعل في هذه الدورة"
+  },
+  "attendance": {
+    "attendanceMarked": "تم تسجيل الحضور بنجاح",
+    "attendanceUpdated": "تم تحديث الحضور بنجاح",
+    "attendanceNotFound": "سجل الحضور غير موجود"
+  },
+  "grades": {
+    "gradeEntered": "تم إدخال الدرجة بنجاح",
+    "gradeUpdated": "تم تحديث الدرجة بنجاح",
+    "gradeDeleted": "تم حذف الدرجة بنجاح",
+    "gradeNotFound": "الدرجة غير موجودة"
+  },
+  "errors": {
+    "required": "هذا الحقل مطلوب",
+    "invalidEmail": "صيغة البريد الإلكتروني غير صحيحة",
+    "passwordTooShort": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "unauthorized": "وصول غير مصرح",
+    "forbidden": "محظور",
+    "notFound": "المورد غير موجود",
+    "serverError": "خطأ في الخادم",
+    "validationError": "خطأ في التحقق"
+  }
+}

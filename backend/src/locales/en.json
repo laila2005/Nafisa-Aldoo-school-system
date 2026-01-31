@@ -1,0 +1,39 @@
+{
+  "auth": {
+    "loginSuccess": "Login successful",
+    "registerSuccess": "User registered successfully",
+    "invalidCredentials": "Invalid email or password",
+    "emailExists": "User with this email already exists",
+    "userNotFound": "User not found",
+    "accountInactive": "Account is inactive"
+  },
+  "courses": {
+    "courseCreated": "Course created successfully",
+    "courseUpdated": "Course updated successfully",
+    "courseDeleted": "Course deleted successfully",
+    "courseNotFound": "Course not found",
+    "studentEnrolled": "Student enrolled successfully",
+    "alreadyEnrolled": "Student already enrolled in this course"
+  },
+  "attendance": {
+    "attendanceMarked": "Attendance marked successfully",
+    "attendanceUpdated": "Attendance updated successfully",
+    "attendanceNotFound": "Attendance record not found"
+  },
+  "grades": {
+    "gradeEntered": "Grade entered successfully",
+    "gradeUpdated": "Grade updated successfully",
+    "gradeDeleted": "Grade deleted successfully",
+    "gradeNotFound": "Grade not found"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email format",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Forbidden",
+    "notFound": "Resource not found",
+    "serverError": "Internal server error",
+    "validationError": "Validation error"
+  }
+}
