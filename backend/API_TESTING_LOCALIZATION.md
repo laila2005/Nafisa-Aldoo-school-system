@@ -1,6 +1,7 @@
 # API Testing Examples - Localization
 
 ## Test 1: Register User (English - Default)
+
 ```http
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
@@ -16,6 +17,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -33,6 +35,7 @@ Content-Type: application/json
 ---
 
 ## Test 2: Register User (Arabic - Query Parameter)
+
 ```http
 POST http://localhost:5000/api/auth/register?lang=ar
 Content-Type: application/json
@@ -48,6 +51,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -65,6 +69,7 @@ Content-Type: application/json
 ---
 
 ## Test 3: Login (English)
+
 ```http
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
@@ -76,6 +81,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -96,6 +102,7 @@ Content-Type: application/json
 ---
 
 ## Test 4: Login (Arabic - Header)
+
 ```http
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
@@ -108,6 +115,7 @@ Accept-Language: ar
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -128,6 +136,7 @@ Accept-Language: ar
 ---
 
 ## Test 5: Error - Missing Required Fields (English)
+
 ```http
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
@@ -138,6 +147,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "error": "This field is required"
@@ -147,6 +157,7 @@ Content-Type: application/json
 ---
 
 ## Test 6: Error - Missing Required Fields (Arabic)
+
 ```http
 POST http://localhost:5000/api/auth/register?lang=ar
 Content-Type: application/json
@@ -157,6 +168,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "error": "هذا الحقل مطلوب"
@@ -166,6 +178,7 @@ Content-Type: application/json
 ---
 
 ## Test 7: Error - User Already Exists (English)
+
 ```http
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
@@ -180,6 +193,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "error": "User with this email already exists"
@@ -189,6 +203,7 @@ Content-Type: application/json
 ---
 
 ## Test 8: Error - Invalid Credentials (Arabic)
+
 ```http
 POST http://localhost:5000/api/auth/login?lang=ar
 Content-Type: application/json
@@ -200,6 +215,7 @@ Content-Type: application/json
 ```
 
 **Expected Response:**
+
 ```json
 {
   "error": "بريد إلكتروني أو كلمة مرور غير صحيحة"
@@ -223,18 +239,23 @@ Content-Type: application/json
 ## Switching Languages
 
 ### Method 1: Query Parameter
+
 Add `?lang=ar` or `?lang=en` to any URL:
+
 ```
 http://localhost:5000/api/auth/register?lang=ar
 ```
 
 ### Method 2: Accept-Language Header
+
 Add header to your request:
+
 ```
 Accept-Language: ar
 ```
 
 ### Method 3: Default
+
 If neither is specified, defaults to English.
 
 ---
@@ -242,5 +263,6 @@ If neither is specified, defaults to English.
 ## Check Response Language
 
 Look for the `Content-Language` header in the response:
+
 - `Content-Language: en` = English
 - `Content-Language: ar` = Arabic

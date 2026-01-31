@@ -14,9 +14,9 @@ declare global {
  */
 export const localizationMiddleware = (req: Request, res: Response, next: NextFunction) => {
   req.language = getUserLanguage(req);
-  
+
   // Set language in response header
   res.setHeader('Content-Language', req.language);
-  
+
   next();
 };
