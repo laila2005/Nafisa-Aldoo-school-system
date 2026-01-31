@@ -52,7 +52,7 @@ const startServer = async () => {
     await connectDatabase();
 
     // Sync database (create tables)
-    await syncDatabase(false); // Set to true to drop and recreate tables
+    await syncDatabase(true); // IMPORTANT: Run once with true, then change back to false!
 
     // Start listening
     app.listen(PORT, () => {
