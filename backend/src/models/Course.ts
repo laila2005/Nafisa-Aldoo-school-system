@@ -1,38 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
-import { Semester } from '../types/index.js';
+import { sequelize } from '../database/connection';
+import { User } from './User';
 
-interface CourseAttributes {
-  id: string;
-  name: string;
-  code: string;
-  description?: string;
-  gradeLevel: string;
-  academicYear: string;
-  semester: Semester;
-  teacherId: string;
-  maxStudents: number;
-  isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface CourseCreationAttributes extends Optional<CourseAttributes, 'id' | 'isActive'> {}
-
-class Course extends Model<CourseAttributes, CourseCreationAttributes> implements CourseAttributes {
-  declare id: string;
-  declare name: string;
-  declare code: string;
-  declare description?: string;
-  declare gradeLevel: string;
-  declare academicYear: string;
-  declare semester: Semester;
-  declare teacherId: string;
-  declare maxStudents: number;
-  declare isActive: boolean;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class Course extends Model {
+  public id!: string;
+  public name!: string;
+  public code!: string;
+  public description?: string;
+  public gradeLevel?: string;
+  public academicYear?: string;
+  public semester?: 'FALL' | 'SPRING' | 'SUMMER';
+  public teacherId!: string;
+  public maxStudents?: number;
+  public isActive!: boolean;
 }
 
 Course.init(
@@ -43,41 +23,36 @@ Course.init(
       primaryKey: true,
     },
     name: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     code: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true,
     },
     gradeLevel: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
+      type: DataTypes.STRING,
     },
     academicYear: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
+      type: DataTypes.STRING,
     },
     semester: {
-      type: DataTypes.ENUM(...Object.values(Semester)),
-      allowNull: false,
+      type: DataTypes.ENUM('FALL', 'SPRING', 'SUMMER'),
     },
     teacherId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
     maxStudents: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -90,5 +65,7 @@ Course.init(
     timestamps: true,
   }
 );
+
+Course.belongsTo(User, { as: 'teacher', foreignKey: 'teacherId' });
 
 export default Course;

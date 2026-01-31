@@ -1,99 +1,50 @@
 import type { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import User from '../models/User.js';
-import { generateToken } from '../utils/jwt.js';
+import * as authService from '../services/authService';
 
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, firstName, lastName, role } = req.body;
+    const { email, password, firstName, lastName, role, phone } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      res.status(400).json({ error: 'User already exists' });
-      return;
+    if (!email || !password || !firstName || !lastName || !role) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const user = await User.create({
+    const user = await authService.registerUser({
       email,
-      password: hashedPassword,
+      password,
       firstName,
       lastName,
       role,
-    });
-
-    // Generate token
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
+      phone,
     });
 
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      },
+      data: user,
     });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Check if user is active
-    if (!user.isActive) {
-      res.status(403).json({ error: 'Account is deactivated' });
-      return;
-    }
+    const result = await authService.loginUser(email, password);
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
-    }
-
-    // Generate token
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    });
-
-    res.json({
+    res.status(200).json({
+      success: true,
       message: 'Login successful',
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      },
+      data: result,
     });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (error: any) {
+    res.status(401).json({ error: error.message });
   }
 };
+

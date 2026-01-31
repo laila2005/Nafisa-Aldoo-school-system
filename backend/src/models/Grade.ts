@@ -1,34 +1,17 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
-import { GradeCategory } from '../types/index.js';
+import { sequelize } from '../database/connection';
+import { User } from './User';
+import { Course } from './Course';
 
-interface GradeAttributes {
-  id: string;
-  studentId: string;
-  courseId: string;
-  category: GradeCategory;
-  score: number;
-  maxScore: number;
-  weight: number;
-  comments?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface GradeCreationAttributes extends Optional<GradeAttributes, 'id'> {}
-
-class Grade extends Model<GradeAttributes, GradeCreationAttributes> implements GradeAttributes {
-  declare id: string;
-  declare studentId: string;
-  declare courseId: string;
-  declare category: GradeCategory;
-  declare score: number;
-  declare maxScore: number;
-  declare weight: number;
-  declare comments?: string;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class Grade extends Model {
+  public id!: string;
+  public studentId!: string;
+  public courseId!: string;
+  public category!: string;
+  public score!: number;
+  public maxScore!: number;
+  public weight?: number;
+  public comments?: string;
 }
 
 Grade.init(
@@ -42,7 +25,7 @@ Grade.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
@@ -50,21 +33,17 @@ Grade.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'courses',
+        model: Course,
         key: 'id',
       },
     },
     category: {
-      type: DataTypes.ENUM(...Object.values(GradeCategory)),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     score: {
       type: DataTypes.DECIMAL(5, 2),
       allowNull: false,
-      validate: {
-        min: 0,
-        max: 100,
-      },
     },
     maxScore: {
       type: DataTypes.DECIMAL(5, 2),
@@ -72,15 +51,9 @@ Grade.init(
     },
     weight: {
       type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
-      validate: {
-        min: 0,
-        max: 100,
-      },
     },
     comments: {
       type: DataTypes.TEXT,
-      allowNull: true,
     },
   },
   {
@@ -89,5 +62,8 @@ Grade.init(
     timestamps: true,
   }
 );
+
+Grade.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
+Grade.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
 
 export default Grade;

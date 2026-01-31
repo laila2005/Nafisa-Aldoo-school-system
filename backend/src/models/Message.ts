@@ -1,31 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
+import { sequelize } from '../database/connection';
+import { User } from './User';
 
-interface MessageAttributes {
-  id: string;
-  senderId: string;
-  recipientId: string;
-  subject: string;
-  content: string;
-  attachments?: string[];
-  isRead: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface MessageCreationAttributes extends Optional<MessageAttributes, 'id' | 'isRead' | 'attachments'> {}
-
-class Message extends Model<MessageAttributes, MessageCreationAttributes> implements MessageAttributes {
-  declare id: string;
-  declare senderId: string;
-  declare recipientId: string;
-  declare subject: string;
-  declare content: string;
-  declare attachments?: string[];
-  declare isRead: boolean;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class Message extends Model {
+  public id!: string;
+  public senderId!: string;
+  public recipientId!: string;
+  public subject!: string;
+  public content!: string;
+  public attachments?: string[];
+  public isRead!: boolean;
 }
 
 Message.init(
@@ -39,7 +23,7 @@ Message.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
@@ -47,12 +31,12 @@ Message.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
     subject: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     content: {
@@ -61,8 +45,6 @@ Message.init(
     },
     attachments: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
-      defaultValue: [],
     },
     isRead: {
       type: DataTypes.BOOLEAN,
@@ -75,5 +57,8 @@ Message.init(
     timestamps: true,
   }
 );
+
+Message.belongsTo(User, { as: 'sender', foreignKey: 'senderId' });
+Message.belongsTo(User, { as: 'recipient', foreignKey: 'recipientId' });
 
 export default Message;

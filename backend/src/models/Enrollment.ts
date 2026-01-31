@@ -1,28 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
-import { EnrollmentStatus } from '../types/index.js';
+import { sequelize } from '../database/connection';
+import { User } from './User';
+import { Course } from './Course';
 
-interface EnrollmentAttributes {
-  id: string;
-  studentId: string;
-  courseId: string;
-  enrollmentDate: Date;
-  status: EnrollmentStatus;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface EnrollmentCreationAttributes extends Optional<EnrollmentAttributes, 'id' | 'enrollmentDate'> {}
-
-class Enrollment extends Model<EnrollmentAttributes, EnrollmentCreationAttributes> implements EnrollmentAttributes {
-  declare id: string;
-  declare studentId: string;
-  declare courseId: string;
-  declare enrollmentDate: Date;
-  declare status: EnrollmentStatus;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class Enrollment extends Model {
+  public id!: string;
+  public studentId!: string;
+  public courseId!: string;
+  public status!: 'ACTIVE' | 'DROPPED' | 'COMPLETED';
 }
 
 Enrollment.init(
@@ -36,7 +21,7 @@ Enrollment.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
@@ -44,19 +29,13 @@ Enrollment.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'courses',
+        model: Course,
         key: 'id',
       },
     },
-    enrollmentDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
     status: {
-      type: DataTypes.ENUM(...Object.values(EnrollmentStatus)),
-      allowNull: false,
-      defaultValue: EnrollmentStatus.ACTIVE,
+      type: DataTypes.ENUM('ACTIVE', 'DROPPED', 'COMPLETED'),
+      defaultValue: 'ACTIVE',
     },
   },
   {
@@ -71,5 +50,8 @@ Enrollment.init(
     ],
   }
 );
+
+Enrollment.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
+Enrollment.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
 
 export default Enrollment;

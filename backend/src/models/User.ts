@@ -1,38 +1,17 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
-import { UserRole } from '../types/index.js';
+import { sequelize } from '../database/connection';
 
-interface UserAttributes {
-  id: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  phone?: string;
-  profilePicture?: string;
-  isActive: boolean;
-  lastLogin?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isActive' | 'lastLogin'> {}
-
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  declare id: string;
-  declare email: string;
-  declare password: string;
-  declare firstName: string;
-  declare lastName: string;
-  declare role: UserRole;
-  declare phone?: string;
-  declare profilePicture?: string;
-  declare isActive: boolean;
-  declare lastLogin?: Date;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class User extends Model {
+  public id!: string;
+  public email!: string;
+  public password!: string;
+  public firstName!: string;
+  public lastName!: string;
+  public role!: 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
+  public phone?: string;
+  public profilePicture?: string;
+  public isActive!: boolean;
+  public lastLogin?: Date;
 }
 
 User.init(
@@ -43,36 +22,31 @@ User.init(
       primaryKey: true,
     },
     email: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true,
-      },
     },
     password: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     firstName: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     lastName: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM(...Object.values(UserRole)),
+      type: DataTypes.ENUM('ADMIN', 'TEACHER', 'STUDENT', 'PARENT'),
       allowNull: false,
     },
     phone: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
+      type: DataTypes.STRING,
     },
     profilePicture: {
-      type: DataTypes.STRING(500),
-      allowNull: true,
+      type: DataTypes.STRING,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -80,7 +54,6 @@ User.init(
     },
     lastLogin: {
       type: DataTypes.DATE,
-      allowNull: true,
     },
   },
   {

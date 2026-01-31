@@ -1,30 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
-import type { Optional } from 'sequelize';
-import sequelize from '../config/database.js';
-import { AttendanceStatus } from '../types/index.js';
+import { sequelize } from '../database/connection';
+import { User } from './User';
+import { Course } from './Course';
 
-interface AttendanceAttributes {
-  id: string;
-  studentId: string;
-  courseId: string;
-  date: Date;
-  status: AttendanceStatus;
-  notes?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface AttendanceCreationAttributes extends Optional<AttendanceAttributes, 'id'> {}
-
-class Attendance extends Model<AttendanceAttributes, AttendanceCreationAttributes> implements AttendanceAttributes {
-  declare id: string;
-  declare studentId: string;
-  declare courseId: string;
-  declare date: Date;
-  declare status: AttendanceStatus;
-  declare notes?: string;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+export class Attendance extends Model {
+  public id!: string;
+  public studentId!: string;
+  public courseId!: string;
+  public date!: string;
+  public status!: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
+  public notes?: string;
 }
 
 Attendance.init(
@@ -38,7 +23,7 @@ Attendance.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'users',
+        model: User,
         key: 'id',
       },
     },
@@ -46,7 +31,7 @@ Attendance.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'courses',
+        model: Course,
         key: 'id',
       },
     },
@@ -55,12 +40,11 @@ Attendance.init(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM(...Object.values(AttendanceStatus)),
+      type: DataTypes.ENUM('PRESENT', 'ABSENT', 'LATE', 'EXCUSED'),
       allowNull: false,
     },
     notes: {
       type: DataTypes.TEXT,
-      allowNull: true,
     },
   },
   {
@@ -75,5 +59,8 @@ Attendance.init(
     ],
   }
 );
+
+Attendance.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
+Attendance.belongsTo(Course, { as: 'course', foreignKey: 'courseId' });
 
 export default Attendance;
