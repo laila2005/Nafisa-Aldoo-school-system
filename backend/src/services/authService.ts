@@ -2,6 +2,8 @@ import { User } from '../models';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { hashPassword, comparePassword } from '../utils/security';
+import type { Request } from 'express';
 
 dotenv.config({ path: '.env' });
 
@@ -23,8 +25,8 @@ export const registerUser = async (userData: {
       throw new Error('User with this email already exists');
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    // Hash password with validation
+    const hashedPassword = await hashPassword(userData.password);
 
     // Create user
     const user = await User.create({
@@ -44,7 +46,7 @@ export const registerUser = async (userData: {
   }
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (email: string, password: string, req?: Request) => {
   try {
     // Find user
     const user = await User.findOne({ where: { email } });
@@ -52,13 +54,13 @@ export const loginUser = async (email: string, password: string) => {
       throw new Error('Invalid email or password');
     }
 
-    // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Check password using secure comparison
+    const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       throw new Error('Invalid email or password');
     }
 
-    // Generate token
+    // Generate token with security context
     const token = jwt.sign(
       {
         userId: user.id,
@@ -69,11 +71,17 @@ export const loginUser = async (email: string, password: string) => {
       JWT_SECRET,
       {
         expiresIn: JWT_EXPIRES_IN,
+        issuer: 'nafisa-aldoo-school',
+        audience: 'school-management-api',
       }
     );
 
     // Update last login
-    await user.update({ lastLogin: new Date() });
+    await user.update({ 
+      lastLogin: new Date(),
+      // Store last login IP if request available
+      ...(req && { lastLoginIp: req.ip }),
+    });
 
     return {
       token,

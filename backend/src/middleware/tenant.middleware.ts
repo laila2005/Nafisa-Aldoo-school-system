@@ -50,9 +50,13 @@ export const tenantMiddleware = async (req: Request, res: Response, next: NextFu
       });
     }
 
+    // SECURITY FIX: Use parameterized query to prevent SQL injection
     // Set PostgreSQL session variable for Row-Level Security
     // This makes all queries automatically filter by school_id
-    await sequelize.query(`SET LOCAL app.current_school_id = '${schoolId}'`);
+    await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
+      replacements: { schoolId },
+      type: 'SET',
+    });
 
     // Also attach to request object for application use
     req.schoolId = schoolId;
