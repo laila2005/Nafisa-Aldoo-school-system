@@ -138,23 +138,26 @@ npm install
 
 ### 2. Install Redis (Optional but Recommended)
 
-**Windows:**
+**Cloud Redis (Recommended - No Installation Needed):**
 
 ```bash
-# Using WSL or Docker
-docker run -d -p 6379:6379 redis:latest
+# Using Upstash (Free Tier Available)
+# 1. Sign up at https://upstash.com/
+# 2. Create a new Redis database (EU West 1)
+# 3. Copy the connection URL
+# 4. Add to .env: REDIS_URL=rediss://default:YOUR_PASSWORD@your-db.upstash.io:6379
 ```
 
-**Linux/Mac:**
+**Local Redis (Optional - For Advanced Users):**
 
 ```bash
-# Ubuntu/Debian
-sudo apt-get install redis-server
-sudo systemctl start redis
+# Linux/Mac
+sudo apt-get install redis-server  # Ubuntu/Debian
+brew install redis                 # Mac
 
-# Mac
-brew install redis
-brew services start redis
+# Windows (WSL required)
+wsl -d Ubuntu
+sudo apt-get install redis-server
 ```
 
 ### 3. Configure Environment
