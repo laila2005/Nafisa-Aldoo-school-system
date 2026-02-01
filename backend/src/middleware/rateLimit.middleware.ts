@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { cache } from '../config/redis';
+import type { Request, Response, NextFunction } from 'express';
+import { cache } from '../config/redis.js';
 
 interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds

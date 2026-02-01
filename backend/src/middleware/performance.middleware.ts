@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 /**
  * Performance monitoring middleware
@@ -34,7 +34,7 @@ export const performanceMiddleware = (req: Request, res: Response, next: NextFun
     }
 
     // Call original end
-    return originalEnd.apply(this, args);
+    return originalEnd.apply(this, args as [any, BufferEncoding, (() => void)?]);
   };
 
   next();

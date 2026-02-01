@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
-import { User } from '../models';
-import { cache } from '../config/redis';
+import { User } from '../models/index.js';
+import { cache } from '../config/redis.js';
 
 /**
  * Password Security Configuration - OWASP Recommendations

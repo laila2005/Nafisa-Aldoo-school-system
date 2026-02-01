@@ -25,9 +25,9 @@ interface EnvConfig {
   JWT_EXPIRES_IN: string;
 
   // Redis
-  REDIS_HOST?: string;
-  REDIS_PORT?: number;
-  REDIS_PASSWORD?: string;
+  REDIS_HOST?: string | undefined;
+  REDIS_PORT?: number | undefined;
+  REDIS_PASSWORD?: string | undefined;
 
   // Security
   BCRYPT_ROUNDS: number;

@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { AuditLog } from '../models';
+import type { Request, Response, NextFunction } from 'express';
+import { AuditLog } from '../models/index.js';
 
 /**
  * Audit Log Types
@@ -66,15 +66,15 @@ export class AuditLogger {
     resource,
     resourceId,
   }: {
-    userId?: string;
-    schoolId?: string;
+    userId?: string | undefined;
+    schoolId?: string | undefined;
     action: AuditAction;
     severity?: AuditSeverity;
     details?: any;
-    ipAddress?: string;
-    userAgent?: string;
-    resource?: string;
-    resourceId?: string;
+    ipAddress?: string | undefined;
+    userAgent?: string | undefined;
+    resource?: string | undefined;
+    resourceId?: string | undefined;
   }): Promise<void> {
     try {
       await AuditLog.create({

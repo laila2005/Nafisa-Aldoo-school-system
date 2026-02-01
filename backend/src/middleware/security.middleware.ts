@@ -1,5 +1,5 @@
 import helmet from 'helmet';
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import hpp from 'hpp';
 
