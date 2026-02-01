@@ -4,30 +4,31 @@
 
 This backend has been **fully hardened** against the OWASP Top 10 security vulnerabilities and implements enterprise-grade security measures suitable for production deployment.
 
-**Security Level:** ⭐⭐⭐⭐⭐ (5/5)  
-**OWASP Compliance:** ✅ 100%  
+**Security Level:** ⭐⭐⭐⭐⭐ (5/5)
+**OWASP Compliance:** ✅ 100%
 **Last Security Audit:** February 1, 2026
 
 ---
 
 ## 📊 Quick Stats
 
-| Category | Status | Coverage |
-|----------|--------|----------|
-| OWASP Top 10 2021 | ✅ Complete | 10/10 |
-| Input Validation | ✅ Complete | 100% |
-| Authentication | ✅ Hardened | Enterprise |
-| Authorization | ✅ Multi-layer | RBAC + RLS |
-| Data Protection | ✅ Encrypted | Bcrypt + JWT |
-| Rate Limiting | ✅ Multi-tier | 4 levels |
-| Audit Logging | ✅ Comprehensive | All events |
-| Security Headers | ✅ Complete | 10+ headers |
+| Category          | Status           | Coverage     |
+| ----------------- | ---------------- | ------------ |
+| OWASP Top 10 2021 | ✅ Complete      | 10/10        |
+| Input Validation  | ✅ Complete      | 100%         |
+| Authentication    | ✅ Hardened      | Enterprise   |
+| Authorization     | ✅ Multi-layer   | RBAC + RLS   |
+| Data Protection   | ✅ Encrypted     | Bcrypt + JWT |
+| Rate Limiting     | ✅ Multi-tier    | 4 levels     |
+| Audit Logging     | ✅ Comprehensive | All events   |
+| Security Headers  | ✅ Complete      | 10+ headers  |
 
 ---
 
 ## 🛡️ Security Features Implemented
 
 ### 1. Authentication & Authorization
+
 - ✅ JWT tokens with strong secrets (32+ chars)
 - ✅ Bcrypt password hashing (12 rounds)
 - ✅ Account lockout (5 attempts, 15 min)
@@ -38,6 +39,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ Multi-tenant Row-Level Security (RLS)
 
 ### 2. Input Validation & Sanitization
+
 - ✅ Express-validator on all endpoints
 - ✅ SQL injection prevention (parameterized queries)
 - ✅ NoSQL injection prevention
@@ -47,6 +49,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ File upload validation
 
 ### 3. Security Headers (Helmet.js)
+
 - ✅ Content-Security-Policy (CSP)
 - ✅ HTTP Strict Transport Security (HSTS)
 - ✅ X-Content-Type-Options: nosniff
@@ -57,12 +60,14 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ X-Powered-By removed
 
 ### 4. Rate Limiting (4 Tiers)
+
 - ✅ Global: 100 req/15min per IP
 - ✅ Auth: 5 req/15min per IP
 - ✅ API: 100 req/min per IP
 - ✅ Sensitive: 10 req/hour per IP
 
 ### 5. Audit Logging
+
 - ✅ All authentication events
 - ✅ All data modifications
 - ✅ Security events (injection attempts)
@@ -70,6 +75,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ Suspicious activity monitoring
 
 ### 6. Multi-Tenant Security
+
 - ✅ PostgreSQL Row-Level Security (RLS)
 - ✅ Automatic tenant isolation
 - ✅ Parameterized queries
@@ -77,6 +83,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ School context validation
 
 ### 7. Data Protection
+
 - ✅ Password hashing (bcrypt, 12 rounds)
 - ✅ JWT tokens with expiration
 - ✅ Environment variable validation
@@ -84,6 +91,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 - ✅ Secure error messages
 
 ### 8. Network Security
+
 - ✅ CORS whitelist configuration
 - ✅ HTTPS enforcement (HSTS)
 - ✅ Secure cookies
@@ -95,6 +103,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 ## 📁 Security Files Created
 
 ### Core Security Modules
+
 1. **`src/middleware/security.middleware.ts`**
    - Security headers (Helmet)
    - Rate limiting
@@ -123,6 +132,7 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
    - Security checks on startup
 
 ### Documentation
+
 1. **`SECURITY_IMPLEMENTATION.md`** - Complete OWASP guide
 2. **`SECURITY_CHECKLIST.md`** - Pre-deployment checklist
 3. **`.env.example`** - Secure configuration template
@@ -132,12 +142,14 @@ This backend has been **fully hardened** against the OWASP Top 10 security vulne
 ## 🚀 Quick Start (Security Setup)
 
 ### 1. Install Dependencies
+
 ```bash
 cd backend
 npm install
 ```
 
 **New security packages installed:**
+
 - helmet (security headers)
 - express-rate-limit (rate limiting)
 - express-validator (input validation)
@@ -145,6 +157,7 @@ npm install
 - cookie-parser (session management)
 
 ### 2. Configure Environment
+
 ```bash
 # Copy example and update
 cp .env.example .env
@@ -159,6 +172,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ### 3. Verify Security
+
 ```bash
 # Check environment
 npm run dev
@@ -175,21 +189,25 @@ npm run dev
 ### Before Deployment
 
 1. **JWT_SECRET must be 32+ characters**
+
    ```bash
    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
    ```
 
 2. **Set NODE_ENV=production**
+
    ```env
    NODE_ENV=production
    ```
 
 3. **Use HTTPS in production**
+
    ```env
    FRONTEND_URL=https://your-domain.com
    ```
 
 4. **Strong database password**
+
    ```bash
    node -e "console.log(require('crypto').randomBytes(24).toString('base64'))"
    ```
@@ -205,6 +223,7 @@ npm run dev
 ### Manual Tests
 
 #### 1. Test SQL Injection Protection
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -214,6 +233,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 ```
 
 #### 2. Test XSS Protection
+
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -223,6 +243,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 ```
 
 #### 3. Test Rate Limiting
+
 ```bash
 for i in {1..10}; do
   curl -X POST http://localhost:5000/api/auth/login \
@@ -234,6 +255,7 @@ done
 ```
 
 #### 4. Test Account Lockout
+
 ```bash
 # Try logging in 6 times with wrong password
 # Expected: 423 Locked after 5 attempts
@@ -280,6 +302,7 @@ done
 ## 🔧 Configuration Reference
 
 ### Environment Variables (Required)
+
 ```env
 NODE_ENV=production
 PORT=5000
@@ -294,6 +317,7 @@ JWT_EXPIRES_IN=7d
 ```
 
 ### Security Defaults
+
 ```typescript
 {
   passwordPolicy: {
@@ -320,12 +344,12 @@ JWT_EXPIRES_IN=7d
 
 ## 📚 Documentation
 
-| Document | Description |
-|----------|-------------|
+| Document                     | Description                         |
+| ---------------------------- | ----------------------------------- |
 | `SECURITY_IMPLEMENTATION.md` | Complete OWASP implementation guide |
-| `SECURITY_CHECKLIST.md` | Pre-deployment security checklist |
-| `.env.example` | Secure configuration template |
-| `MULTI_TENANT_GUIDE.md` | Multi-tenant security guide |
+| `SECURITY_CHECKLIST.md`      | Pre-deployment security checklist   |
+| `.env.example`               | Secure configuration template       |
+| `MULTI_TENANT_GUIDE.md`      | Multi-tenant security guide         |
 
 ---
 
@@ -341,6 +365,7 @@ JWT_EXPIRES_IN=7d
 6. **Document:** Post-mortem analysis
 
 ### Security Contact
+
 - **Email:** security@nafisa-aldoo-school.com
 - **Do not publicly disclose vulnerabilities**
 
@@ -359,16 +384,16 @@ JWT_EXPIRES_IN=7d
 
 ## 🔄 Maintenance Schedule
 
-| Frequency | Task |
-|-----------|------|
-| Daily | Monitor failed logins |
-| Weekly | Review audit logs |
-| Weekly | npm audit |
-| Monthly | Update dependencies |
-| Monthly | Review security configs |
-| Quarterly | Penetration testing |
-| Quarterly | Security training |
-| Yearly | Full security audit |
+| Frequency | Task                    |
+| --------- | ----------------------- |
+| Daily     | Monitor failed logins   |
+| Weekly    | Review audit logs       |
+| Weekly    | npm audit               |
+| Monthly   | Update dependencies     |
+| Monthly   | Review security configs |
+| Quarterly | Penetration testing     |
+| Quarterly | Security training       |
+| Yearly    | Full security audit     |
 
 ---
 
@@ -384,6 +409,7 @@ JWT_EXPIRES_IN=7d
 ## 📞 Support
 
 For security questions or concerns:
+
 - Review documentation first
 - Check audit logs
 - Contact security team
@@ -392,6 +418,6 @@ For security questions or concerns:
 
 ---
 
-**Last Updated:** February 1, 2026  
-**Security Level:** Enterprise Grade  
+**Last Updated:** February 1, 2026
+**Security Level:** Enterprise Grade
 **OWASP Compliance:** ✅ 100%

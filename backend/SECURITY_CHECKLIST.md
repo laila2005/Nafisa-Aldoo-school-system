@@ -261,12 +261,13 @@ Use this checklist before deploying to production to ensure all security measure
 
 ## ✅ Sign-off
 
-**Security Review Completed By:** ________________  
-**Date:** ________________  
-**Environment:** [ ] Development [ ] Staging [ ] Production  
-**Version:** ________________  
+**Security Review Completed By:** ******\_\_\_\_******
+**Date:** ******\_\_\_\_******
+**Environment:** [ ] Development [ ] Staging [ ] Production
+**Version:** ******\_\_\_\_******
 
 **Notes:**
+
 ```
 [Add any additional notes, exceptions, or pending items here]
 ```
@@ -292,13 +293,13 @@ If ANY of these are checked, **DO NOT DEPLOY** until resolved:
 
 ## 📞 Security Contact
 
-**Report security issues to:**  
-Email: security@nafisa-aldoo-school.com  
+**Report security issues to:**
+Email: security@nafisa-aldoo-school.com
 GitHub: [Security Advisory](https://github.com/yourrepo/security)
 
 **Do not publicly disclose security vulnerabilities.**
 
 ---
 
-**Last Updated:** February 1, 2026  
+**Last Updated:** February 1, 2026
 **Checklist Version:** 1.0.0

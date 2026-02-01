@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const identifier = req.body.email || req.ip || 'unknown';
-  
+
   try {
     const { email, password } = req.body;
 
@@ -62,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
 
     // Clear failed attempts on successful login
     await AccountLockout.clearFailedAttempts(identifier);
-    
+
     // Log successful login
     await AuditLogger.logAuth(AuditAction.LOGIN_SUCCESS, req, result.user.id, true);
 
@@ -74,7 +74,7 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) {
     // Record failed attempt
     const lockoutInfo = await AccountLockout.recordFailedAttempt(identifier);
-    
+
     // Log failed login
     await AuditLogger.logAuth(AuditAction.LOGIN_FAILED, req, undefined, false);
 

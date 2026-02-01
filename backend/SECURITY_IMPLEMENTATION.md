@@ -11,6 +11,7 @@ This backend implements **enterprise-grade security** following OWASP (Open Web 
 ### ✅ A01:2021 – Broken Access Control
 
 **Implementation:**
+
 - ✅ Row-Level Security (RLS) at database level
 - ✅ Multi-tenant isolation using PostgreSQL RLS policies
 - ✅ Role-Based Access Control (RBAC)
@@ -19,6 +20,7 @@ This backend implements **enterprise-grade security** following OWASP (Open Web 
 - ✅ Audit logging for all access attempts
 
 **Files:**
+
 - `src/middleware/auth.ts` - Authentication & authorization
 - `src/middleware/tenant.middleware.ts` - Multi-tenant isolation
 - `src/utils/auditLogger.ts` - Access logging
@@ -28,6 +30,7 @@ This backend implements **enterprise-grade security** following OWASP (Open Web 
 ### ✅ A02:2021 – Cryptographic Failures
 
 **Implementation:**
+
 - ✅ Bcrypt with 12 rounds for password hashing
 - ✅ JWT tokens with strong secrets (min 32 chars)
 - ✅ Secure session management
@@ -36,21 +39,23 @@ This backend implements **enterprise-grade security** following OWASP (Open Web 
 - ✅ Environment variable validation
 
 **Files:**
+
 - `src/utils/security.ts` - Password hashing & validation
 - `src/config/env.ts` - Environment validation
 - `src/middleware/security.middleware.ts` - HSTS headers
 
 **Configuration:**
+
 ```typescript
 // Password hashing
-bcrypt.hash(password, 12) // 12 rounds
+bcrypt.hash(password, 12); // 12 rounds
 
 // JWT security
 jwt.sign(payload, JWT_SECRET, {
   expiresIn: '7d',
   issuer: 'nafisa-aldoo-school',
-  audience: 'school-management-api'
-})
+  audience: 'school-management-api',
+});
 ```
 
 ---
@@ -58,6 +63,7 @@ jwt.sign(payload, JWT_SECRET, {
 ### ✅ A03:2021 – Injection
 
 **Implementation:**
+
 - ✅ Parameterized queries (Sequelize ORM)
 - ✅ SQL injection detection & blocking
 - ✅ NoSQL injection prevention
@@ -66,11 +72,13 @@ jwt.sign(payload, JWT_SECRET, {
 - ✅ Command injection prevention
 
 **Files:**
+
 - `src/middleware/validation.middleware.ts` - Input validation & sanitization
 - `src/middleware/security.middleware.ts` - XSS & injection protection
 - `src/middleware/tenant.middleware.ts` - Parameterized queries
 
 **Example:**
+
 ```typescript
 // ✅ SECURE - Parameterized query
 await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
@@ -87,6 +95,7 @@ await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
 ### ✅ A04:2021 – Insecure Design
 
 **Implementation:**
+
 - ✅ Secure multi-tenant architecture
 - ✅ Defense in depth (multiple security layers)
 - ✅ Fail-safe defaults
@@ -94,6 +103,7 @@ await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
 - ✅ Security by design (not afterthought)
 
 **Architecture:**
+
 ```
 ┌─────────────────────────────────────────┐
 │  Layer 1: HTTPS/TLS                     │
@@ -119,6 +129,7 @@ await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
 ### ✅ A05:2021 – Security Misconfiguration
 
 **Implementation:**
+
 - ✅ Environment variable validation on startup
 - ✅ Secure default configurations
 - ✅ Production-safe error messages
@@ -127,11 +138,13 @@ await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
 - ✅ Framework security features enabled
 
 **Files:**
+
 - `src/config/env.ts` - Environment validation
 - `src/middleware/security.middleware.ts` - Security headers
 - `src/index.ts` - Error handling
 
 **Checks:**
+
 ```typescript
 // Validates on startup
 - JWT_SECRET must be 32+ characters
@@ -145,12 +158,14 @@ await sequelize.query('SET LOCAL app.current_school_id = :schoolId', {
 ### ✅ A06:2021 – Vulnerable Components
 
 **Implementation:**
+
 - ✅ Minimal dependencies
 - ✅ Regular npm audit
 - ✅ No deprecated packages
 - ✅ Security-focused package selection
 
 **Monitoring:**
+
 ```bash
 npm audit                    # Check vulnerabilities
 npm outdated                 # Check for updates
@@ -158,6 +173,7 @@ npm update                   # Update packages
 ```
 
 **Key Packages:**
+
 - `helmet` - Security headers
 - `express-rate-limit` - Rate limiting
 - `express-validator` - Input validation
@@ -169,6 +185,7 @@ npm update                   # Update packages
 ### ✅ A07:2021 – Identification & Authentication Failures
 
 **Implementation:**
+
 - ✅ Strong password requirements (8+ chars, complexity)
 - ✅ Account lockout after 5 failed attempts
 - ✅ 15-minute lockout duration
@@ -178,10 +195,12 @@ npm update                   # Update packages
 - ✅ 2FA ready (code prepared)
 
 **Files:**
+
 - `src/utils/security.ts` - Password policies & lockout
 - `src/controllers/authController.ts` - Authentication logic
 
 **Password Policy:**
+
 ```typescript
 {
   minLength: 8,
@@ -202,6 +221,7 @@ npm update                   # Update packages
 ### ✅ A08:2021 – Software and Data Integrity Failures
 
 **Implementation:**
+
 - ✅ Audit logging for all critical operations
 - ✅ Immutable audit logs
 - ✅ Request/Response integrity
@@ -209,9 +229,11 @@ npm update                   # Update packages
 - ✅ Database transaction integrity
 
 **Files:**
+
 - `src/utils/auditLogger.ts` - Comprehensive audit logging
 
 **Logged Events:**
+
 - Authentication (login/logout/failed attempts)
 - Data modifications (create/update/delete)
 - Security events (injection attempts, suspicious activity)
@@ -222,6 +244,7 @@ npm update                   # Update packages
 ### ✅ A09:2021 – Security Logging & Monitoring Failures
 
 **Implementation:**
+
 - ✅ Comprehensive audit logging
 - ✅ Security event monitoring
 - ✅ Failed login tracking
@@ -230,17 +253,19 @@ npm update                   # Update packages
 - ✅ Structured logging format
 
 **Files:**
+
 - `src/utils/auditLogger.ts` - Audit logging
 - `src/middleware/security.middleware.ts` - Security logging
 
 **Monitored Events:**
+
 ```typescript
-- LOGIN_SUCCESS / LOGIN_FAILED / ACCOUNT_LOCKED
-- UNAUTHORIZED_ACCESS
-- SQL_INJECTION_ATTEMPT / XSS_ATTEMPT
-- RATE_LIMIT_EXCEEDED
-- SUSPICIOUS_ACTIVITY
-- DATA_CREATED / DATA_UPDATED / DATA_DELETED
+-LOGIN_SUCCESS / LOGIN_FAILED / ACCOUNT_LOCKED -
+  UNAUTHORIZED_ACCESS -
+  SQL_INJECTION_ATTEMPT / XSS_ATTEMPT -
+  RATE_LIMIT_EXCEEDED -
+  SUSPICIOUS_ACTIVITY -
+  DATA_CREATED / DATA_UPDATED / DATA_DELETED;
 ```
 
 ---
@@ -248,12 +273,14 @@ npm update                   # Update packages
 ### ✅ A10:2021 – Server-Side Request Forgery (SSRF)
 
 **Implementation:**
+
 - ✅ No external URL fetching
 - ✅ Input validation on all endpoints
 - ✅ No user-controlled redirects
 - ✅ Strict CORS policy
 
 **Files:**
+
 - `src/middleware/security.middleware.ts` - CORS configuration
 
 ---
@@ -280,6 +307,7 @@ npm update                   # Update packages
 ### Rate Limiting
 
 **Tiers:**
+
 1. **Auth Endpoints:** 5 requests per 15 minutes
 2. **API Endpoints:** 100 requests per minute
 3. **Global:** 100 requests per 15 minutes per IP
@@ -288,6 +316,7 @@ npm update                   # Update packages
 ### Input Validation
 
 **All inputs validated:**
+
 - ✅ Email format
 - ✅ Password strength
 - ✅ UUID format
@@ -300,6 +329,7 @@ npm update                   # Update packages
 ### XSS Protection
 
 **Multiple layers:**
+
 1. Input sanitization (removes script tags)
 2. Content Security Policy headers
 3. Output encoding
@@ -308,6 +338,7 @@ npm update                   # Update packages
 ### CSRF Protection
 
 **Implemented:**
+
 - CORS whitelist
 - Cookie-based tokens ready
 - SameSite cookies
@@ -352,6 +383,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ### Validation
 
 Environment variables are validated on startup:
+
 - ✅ All required vars present
 - ✅ JWT_SECRET is 32+ chars
 - ✅ No default/weak secrets in production
@@ -383,6 +415,7 @@ CREATE TABLE audit_logs (
 ### Security Metrics
 
 Monitor these in production:
+
 - Failed login attempts per IP
 - Account lockouts
 - SQL injection attempts
@@ -455,11 +488,13 @@ npm test
 ## 📚 Security Resources
 
 ### OWASP Resources
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 - [OWASP API Security](https://owasp.org/www-project-api-security/)
 
 ### Best Practices
+
 - [Node.js Security Checklist](https://blog.risingstack.com/node-js-security-checklist/)
 - [Express.js Security Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
 - [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
@@ -469,22 +504,26 @@ npm test
 ## 🔍 Security Maintenance
 
 ### Daily
+
 - Monitor failed login attempts
 - Review security alerts
 - Check rate limit violations
 
 ### Weekly
+
 - Review audit logs
 - Check for suspicious patterns
 - Run `npm audit`
 
 ### Monthly
+
 - Update dependencies
 - Review security configurations
 - Test backup/recovery
 - Security training
 
 ### Quarterly
+
 - Penetration testing
 - Security audit
 - Update security policies
@@ -525,6 +564,7 @@ npm test
 ## ✅ Security Compliance
 
 ### Standards Met
+
 - ✅ OWASP Top 10 2021
 - ✅ CWE Top 25
 - ✅ GDPR Ready (data isolation)
@@ -537,6 +577,7 @@ npm test
 ## 📞 Security Contact
 
 For security issues, contact:
+
 - **Email:** security@nafisa-aldoo-school.com
 - **Report:** [GitHub Security Advisory](https://github.com/yourrepo/security/advisories)
 
@@ -547,6 +588,7 @@ For security issues, contact:
 ## 📝 Change Log
 
 ### v1.0.0 - February 2026
+
 - ✅ Complete OWASP Top 10 implementation
 - ✅ Multi-tenant security (RLS)
 - ✅ Password policies & account lockout
@@ -558,6 +600,6 @@ For security issues, contact:
 
 ---
 
-**Last Updated:** February 1, 2026  
-**Security Version:** 1.0.0  
+**Last Updated:** February 1, 2026
+**Security Version:** 1.0.0
 **Compliance:** OWASP Top 10 2021

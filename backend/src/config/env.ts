@@ -91,19 +91,15 @@ export function validateEnv(): EnvConfig {
 
   // Check for default/weak secrets in production
   if (process.env.NODE_ENV === 'production') {
-    const weakSecrets = [
-      'your-secret-key',
-      'secret',
-      'change-this',
-      'password',
-      '123456',
-    ];
+    const weakSecrets = ['your-secret-key', 'secret', 'change-this', 'password', '123456'];
 
     if (
       process.env.JWT_SECRET &&
       weakSecrets.some((weak) => process.env.JWT_SECRET?.toLowerCase().includes(weak))
     ) {
-      errors.push('JWT_SECRET appears to be a default/weak value. Use a strong secret in production');
+      errors.push(
+        'JWT_SECRET appears to be a default/weak value. Use a strong secret in production'
+      );
     }
 
     if (
@@ -115,9 +111,7 @@ export function validateEnv(): EnvConfig {
 
     // Ensure HTTPS in production
     if (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.startsWith('https://')) {
-      console.warn(
-        '⚠️  WARNING: FRONTEND_URL should use HTTPS in production for security'
-      );
+      console.warn('⚠️  WARNING: FRONTEND_URL should use HTTPS in production for security');
     }
   }
 
@@ -156,7 +150,7 @@ export function validateEnv(): EnvConfig {
   };
 
   console.log('✅ Environment variables validated successfully');
-  
+
   // Log configuration (excluding sensitive data)
   if (config.NODE_ENV === 'development') {
     console.log('📋 Configuration:');

@@ -22,7 +22,9 @@ const PASSWORD_CONFIG = {
 /**
  * Validate password strength
  */
-export const validatePasswordStrength = (password: string): { valid: boolean; errors: string[] } => {
+export const validatePasswordStrength = (
+  password: string
+): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
   if (password.length < PASSWORD_CONFIG.minLength) {
@@ -103,7 +105,9 @@ export class AccountLockout {
     const attemptsLeft = Math.max(0, PASSWORD_CONFIG.maxLoginAttempts - attempts);
 
     if (isLocked) {
-      console.warn(`[SECURITY] Account locked for: ${identifier} after ${attempts} failed attempts`);
+      console.warn(
+        `[SECURITY] Account locked for: ${identifier} after ${attempts} failed attempts`
+      );
     }
 
     return { isLocked, attemptsLeft };

@@ -71,11 +71,7 @@ export const validateRole = () =>
 
 // Pagination validation
 export const validatePagination = () => [
-  query('page')
-    .optional()
-    .isInt({ min: 1 })
-    .withMessage('Page must be a positive integer')
-    .toInt(),
+  query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer').toInt(),
   query('limit')
     .optional()
     .isInt({ min: 1, max: 100 })
@@ -111,11 +107,7 @@ export const validateUpdateUser = [
   validateName('firstName').optional(),
   validateName('lastName').optional(),
   validatePhone(),
-  body('dateOfBirth')
-    .optional()
-    .isISO8601()
-    .withMessage('Invalid date format')
-    .toDate(),
+  body('dateOfBirth').optional().isISO8601().withMessage('Invalid date format').toDate(),
   handleValidationErrors,
 ];
 
@@ -168,9 +160,7 @@ export const validateAssignment = [
 
 // Grade validation
 export const validateGrade = [
-  body('score')
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Score must be between 0 and 100'),
+  body('score').isFloat({ min: 0, max: 100 }).withMessage('Score must be between 0 and 100'),
   body('feedback')
     .optional()
     .trim()
@@ -191,11 +181,7 @@ export const validateSchool = [
     .withMessage('School code must be between 1 and 50 characters')
     .matches(/^[A-Z0-9-]+$/)
     .withMessage('School code can only contain uppercase letters, numbers, and hyphens'),
-  body('email')
-    .optional()
-    .isEmail()
-    .withMessage('Invalid email format')
-    .normalizeEmail(),
+  body('email').optional().isEmail().withMessage('Invalid email format').normalizeEmail(),
   body('phone')
     .optional()
     .matches(/^[+]?[\d\s()-]{10,20}$/)
@@ -216,7 +202,7 @@ export const validateFileUpload = (
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const file = (req as any).file;
-    
+
     if (!file) {
       return res.status(400).json({
         success: false,

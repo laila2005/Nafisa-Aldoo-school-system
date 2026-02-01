@@ -77,7 +77,7 @@ export const loginUser = async (email: string, password: string, req?: Request) 
     );
 
     // Update last login
-    await user.update({ 
+    await user.update({
       lastLogin: new Date(),
       // Store last login IP if request available
       ...(req && { lastLoginIp: req.ip }),

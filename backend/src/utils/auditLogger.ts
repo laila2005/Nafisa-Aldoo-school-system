@@ -12,26 +12,26 @@ export enum AuditAction {
   PASSWORD_CHANGE = 'PASSWORD_CHANGE',
   PASSWORD_RESET = 'PASSWORD_RESET',
   ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
-  
+
   // User Management
   USER_CREATED = 'USER_CREATED',
   USER_UPDATED = 'USER_UPDATED',
   USER_DELETED = 'USER_DELETED',
   ROLE_CHANGED = 'ROLE_CHANGED',
-  
+
   // Data Access
   DATA_ACCESSED = 'DATA_ACCESSED',
   DATA_CREATED = 'DATA_CREATED',
   DATA_UPDATED = 'DATA_UPDATED',
   DATA_DELETED = 'DATA_DELETED',
-  
+
   // Security Events
   UNAUTHORIZED_ACCESS = 'UNAUTHORIZED_ACCESS',
   SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
   XSS_ATTEMPT = 'XSS_ATTEMPT',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
   SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
-  
+
   // School Management
   SCHOOL_CREATED = 'SCHOOL_CREATED',
   SCHOOL_UPDATED = 'SCHOOL_UPDATED',
@@ -130,11 +130,7 @@ export class AuditLogger {
   /**
    * Log security events
    */
-  static async logSecurity(
-    action: AuditAction,
-    req: Request,
-    details?: any
-  ): Promise<void> {
+  static async logSecurity(action: AuditAction, req: Request, details?: any): Promise<void> {
     await this.log({
       userId: (req as any).user?.id,
       schoolId: (req as any).schoolId,
@@ -267,34 +263,28 @@ export class SecurityMonitor {
    */
   static reportSuspiciousActivity(ip: string, req: Request): void {
     const now = Date.now();
-    
+
     if (!this.suspiciousIPs.has(ip)) {
       this.suspiciousIPs.set(ip, []);
     }
 
     const timestamps = this.suspiciousIPs.get(ip)!;
-    
+
     // Remove old timestamps
-    const recentTimestamps = timestamps.filter(
-      (ts) => now - ts < this.monitoringWindow
-    );
-    
+    const recentTimestamps = timestamps.filter((ts) => now - ts < this.monitoringWindow);
+
     recentTimestamps.push(now);
     this.suspiciousIPs.set(ip, recentTimestamps);
 
     // Check if threshold exceeded
     if (recentTimestamps.length >= this.suspiciousActivityThreshold) {
       console.error(`[SECURITY ALERT] Suspicious activity from IP: ${ip}`);
-      
+
       // Log to audit
-      AuditLogger.logSecurity(
-        AuditAction.SUSPICIOUS_ACTIVITY,
-        req,
-        {
-          reason: 'Multiple security events in short time',
-          eventCount: recentTimestamps.length,
-        }
-      );
+      AuditLogger.logSecurity(AuditAction.SUSPICIOUS_ACTIVITY, req, {
+        reason: 'Multiple security events in short time',
+        eventCount: recentTimestamps.length,
+      });
 
       // TODO: Implement IP blocking or notification
     }
@@ -306,10 +296,8 @@ export class SecurityMonitor {
   static cleanup(): void {
     const now = Date.now();
     for (const [ip, timestamps] of this.suspiciousIPs.entries()) {
-      const recentTimestamps = timestamps.filter(
-        (ts) => now - ts < this.monitoringWindow
-      );
-      
+      const recentTimestamps = timestamps.filter((ts) => now - ts < this.monitoringWindow);
+
       if (recentTimestamps.length === 0) {
         this.suspiciousIPs.delete(ip);
       } else {
@@ -320,6 +308,9 @@ export class SecurityMonitor {
 }
 
 // Run cleanup every 5 minutes
-setInterval(() => {
-  SecurityMonitor.cleanup();
-}, 5 * 60 * 1000);
+setInterval(
+  () => {
+    SecurityMonitor.cleanup();
+  },
+  5 * 60 * 1000
+);
