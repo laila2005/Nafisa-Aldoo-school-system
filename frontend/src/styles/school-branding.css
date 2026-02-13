@@ -1,0 +1,71 @@
+/* School Branding Styles */
+
+:root {
+  --school-primary: #1e40af;
+  --school-secondary: #64748b;
+  --school-accent: #f59e0b;
+}
+
+/* Apply school primary color */
+.bg-school-primary {
+  background-color: var(--school-primary);
+}
+
+.text-school-primary {
+  color: var(--school-primary);
+}
+
+.border-school-primary {
+  border-color: var(--school-primary);
+}
+
+/* Apply school secondary color */
+.bg-school-secondary {
+  background-color: var(--school-secondary);
+}
+
+.text-school-secondary {
+  color: var(--school-secondary);
+}
+
+/* Apply school accent color */
+.bg-school-accent {
+  background-color: var(--school-accent);
+}
+
+.text-school-accent {
+  color: var(--school-accent);
+}
+
+/* Button hover states with school colors */
+.btn-school-primary {
+  background-color: var(--school-primary);
+  color: white;
+  transition: all 0.2s;
+}
+
+.btn-school-primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Links with school colors */
+a.school-link {
+  color: var(--school-primary);
+}
+
+a.school-link:hover {
+  color: var(--school-accent);
+}
+
+/* School logo container */
+.school-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.school-logo-container img {
+  max-height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+}
