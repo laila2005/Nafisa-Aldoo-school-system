@@ -2,34 +2,34 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../database/connection';
 
 export class User extends Model {
-  public id!: string;
-  public schoolId!: string; // Multi-tenant: links user to their school
-  public email!: string;
-  public password!: string;
-  public firstName!: string;
-  public lastName!: string;
-  public role!: 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
-  public phone?: string;
-  public profilePicture?: string;
-  public isActive!: boolean;
-  public lastLogin?: Date;
+  declare id: string;
+  declare schoolId: string;
+  declare email: string;
+  declare password: string;
+  declare firstName: string;
+  declare lastName: string;
+  declare role: 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
+  declare phone: string;
+  declare profilePicture: string;
+  declare isActive: boolean;
+  declare lastLogin: Date;
 
   // Additional fields
-  public dateOfBirth?: Date;
-  public gender?: string;
-  public address?: string;
-  public city?: string;
-  public state?: string;
-  public postalCode?: string;
-  public country?: string;
-  public profilePictureUrl?: string;
-  public bio?: string;
-  public employeeId?: string;
-  public studentId?: string;
-  public qualification?: string;
-  public experienceYears?: number;
-  public emergencyContactName?: string;
-  public emergencyContactPhone?: string;
+  declare dateOfBirth: Date;
+  declare gender: string;
+  declare address: string;
+  declare city: string;
+  declare state: string;
+  declare postalCode: string;
+  declare country: string;
+  declare profilePictureUrl: string;
+  declare bio: string;
+  declare employeeId: string;
+  declare studentId: string;
+  declare qualification: string;
+  declare experienceYears: number;
+  declare emergencyContactName: string;
+  declare emergencyContactPhone: string;
 }
 
 User.init(

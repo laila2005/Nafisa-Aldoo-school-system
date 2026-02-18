@@ -5,6 +5,7 @@ import { useSchool } from '../../context/SchoolContext';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import { School } from '../../types/school';
+import { login } from '../../services/api';
 
 interface LoginFormData {
   email: string;
@@ -29,56 +30,46 @@ export const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      // Simulate API call - replace with actual API call
-      const mockSchools: School[] = [
-        {
-          id: '1',
+      const response = await login(formData.email, formData.password);
+
+      if (response.success && response.data) {
+        const { token, user } = response.data;
+
+        // Store auth data in localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Set school context
+        const schoolData: School = {
+          id: user.schoolId || '1',
           name: 'Nafisa Aldoo School',
-          nameAr: 'مدرسة نفيسة الدو',
-          code: 'NAS001',
-          email: 'info@nafisa.edu',
-          phone: '+1234567890',
-          logo: '',
+          nameAr: 'مدرسة نفيسة محمد الضوء المتوسطة الخاصة بنات',
+          code: 'NAFISA-ALDOO',
+          email: 'info@nafisa-school.edu.sd',
           subscriptionPlan: 'PREMIUM',
           subscriptionStatus: 'ACTIVE',
-          maxStudents: 1000,
-          maxTeachers: 200,
-          maxStorage: 100,
-          settings: {
-            primaryColor: '#1e40af',
-            secondaryColor: '#64748b',
-            accentColor: '#f59e0b',
-          },
-        },
-        {
-          id: '2',
-          name: 'International Academy',
-          nameAr: 'الأكاديمية الدولية',
-          code: 'IA002',
-          email: 'info@international.edu',
-          subscriptionPlan: 'BASIC',
-          subscriptionStatus: 'TRIAL',
-          maxStudents: 200,
-          maxTeachers: 50,
-          maxStorage: 20,
-        },
-      ];
+          maxStudents: 100,
+          maxTeachers: 20,
+          maxStorage: 5000,
+        };
+        setSchool(schoolData);
 
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      if (mockSchools.length > 1) {
-        setUserSchools(mockSchools);
-        setShowSchoolSelection(true);
-        localStorage.setItem('userSchools', JSON.stringify(mockSchools));
-      } else if (mockSchools.length === 1) {
-        const school = mockSchools[0];
-        setSchool(school);
-        localStorage.setItem('token', 'mock-jwt-token');
-        navigate('/dashboard');
+        // Redirect based on role
+        if (user.role === 'STUDENT') {
+          navigate('/student/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      } else {
+        setError(response.error || 'Login failed. Please try again.');
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+      const message =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        'Login failed. Please check your credentials.';
+      setError(message);
     } finally {
       setIsLoading(false);
     }

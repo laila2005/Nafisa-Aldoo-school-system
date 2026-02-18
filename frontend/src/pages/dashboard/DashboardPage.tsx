@@ -6,6 +6,7 @@ import { useSchool } from '../../context/SchoolContext';
 import SubscriptionBadge from '../../components/school/SubscriptionBadge';
 import FeatureGate from '../../components/school/FeatureGate';
 import Loading from '../../components/common/Loading';
+import { getStoredUser } from '../../utils/auth';
 
 interface DashboardStats {
   totalStudents: number;
@@ -21,12 +22,20 @@ export const DashboardPage: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [alerts, setAlerts] = useState<string[]>([]);
+  const user = getStoredUser();
+
+  useEffect(() => {
+    if (user?.role === 'STUDENT') {
+      navigate('/student/dashboard', { replace: true });
+      return;
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     // Simulate fetching stats
     const fetchStats = async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+
       const mockStats: DashboardStats = {
         totalStudents: 450,
         totalTeachers: 35,
@@ -89,7 +98,7 @@ export const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <Layout user={{ firstName: 'Admin', lastName: 'User', role: 'ADMIN', email: 'admin@school.com' }}>
+    <Layout user={user ? { firstName: user.firstName, lastName: user.lastName, role: user.role, email: user.email } : undefined}>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-cyan-50 space-y-8">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -124,7 +133,7 @@ export const DashboardPage: React.FC = () => {
           {statCards.map((card, index) => {
             const Icon = card.icon;
             const percentage = card.max ? ((card.value as number) / card.max) * 100 : 0;
-            
+
             const gradients = [
               'bg-gradient-to-br from-blue-500 to-blue-600',
               'bg-gradient-to-br from-green-500 to-green-600',
@@ -186,21 +195,21 @@ export const DashboardPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">⚡ Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button 
+            <button
               onClick={() => navigate('/students')}
               className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100 transition-all transform hover:scale-105 hover:shadow-md group"
             >
               <p className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">Add New Student</p>
               <p className="text-sm text-gray-600 mt-1">Register a new student</p>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/courses')}
               className="p-4 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 transition-all transform hover:scale-105 hover:shadow-md group"
             >
               <p className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">Create Course</p>
               <p className="text-sm text-gray-600 mt-1">Set up a new course</p>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/attendance')}
               className="p-4 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100 transition-all transform hover:scale-105 hover:shadow-md group"
             >

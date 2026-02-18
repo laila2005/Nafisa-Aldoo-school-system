@@ -91,6 +91,7 @@ export const loginUser = async (email: string, password: string, req?: Request) 
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
+        schoolId: user.schoolId,
       },
     };
   } catch (error) {

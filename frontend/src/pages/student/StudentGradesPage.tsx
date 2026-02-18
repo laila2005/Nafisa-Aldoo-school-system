@@ -3,6 +3,7 @@ import { Award, TrendingUp, TrendingDown, BookOpen, Download } from 'lucide-reac
 import Layout from '../../components/layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import Button from '../../components/common/Button';
+import { getStoredUser } from '../../utils/auth';
 
 interface StudentGrade {
   id: number;
@@ -19,6 +20,7 @@ interface StudentGrade {
 }
 
 export const StudentGradesPage: React.FC = () => {
+  const user = getStoredUser();
   const [selectedSemester, setSelectedSemester] = useState('Fall 2026');
 
   // Mock data - in real app, fetch from API for logged-in student
@@ -117,7 +119,7 @@ export const StudentGradesPage: React.FC = () => {
   };
 
   return (
-    <Layout user={{ firstName: 'John', lastName: 'Doe', email: 'john.doe@student.com', role: 'STUDENT' }}>
+    <Layout user={user ? { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role } : { firstName: 'Student', lastName: '', email: '', role: 'STUDENT' }}>
       <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-yellow-50 min-h-screen">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">

@@ -8,6 +8,7 @@ import { Modal, ModalActions } from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import { getStudents, createStudent, updateStudent, deleteStudent } from '../../services/api';
+import { getStoredUser } from '../../utils/auth';
 
 interface Student {
   id: number;
@@ -132,6 +133,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ formData, setFormData }) => (
 );
 
 export const StudentsPage: React.FC = () => {
+  const currentUser = getStoredUser();
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -190,13 +192,25 @@ export const StudentsPage: React.FC = () => {
   const loadStudents = async () => {
     try {
       setIsLoading(true);
-      const data = await getStudents();
-      if (data && data.length > 0) {
-        setStudents(data);
+      const response = await getStudents();
+      const list = response?.data || response;
+      if (Array.isArray(list) && list.length > 0) {
+        setStudents(list.map((s: any) => ({
+          id: s.id,
+          firstName: s.firstName || '',
+          lastName: s.lastName || '',
+          email: s.email || '',
+          phone: s.phone || '',
+          grade: s.studentId || '',
+          enrollmentDate: s.createdAt ? new Date(s.createdAt).toISOString().split('T')[0] : '',
+          status: s.isActive ? 'active' as const : 'inactive' as const,
+          parentName: '',
+          parentPhone: '',
+        })));
       }
     } catch (error) {
       console.error('Failed to load students:', error);
-      setMessage({ type: 'error', text: 'Failed to load students data' });
+      setMessage({ type: 'error', text: 'Failed to load students from server' });
     } finally {
       setIsLoading(false);
     }
@@ -396,7 +410,7 @@ export const StudentsPage: React.FC = () => {
   ];
 
   return (
-    <Layout user={{ firstName: 'Admin', lastName: 'User', email: 'admin@school.com', role: 'ADMIN' }}>
+    <Layout user={currentUser ? { firstName: currentUser.firstName, lastName: currentUser.lastName, email: currentUser.email, role: currentUser.role } : undefined}>
       <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between bg-white rounded-xl shadow-sm p-6 border border-gray-100">

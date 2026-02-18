@@ -158,8 +158,26 @@ export const sanitizeRequest = (req: Request, res: Response, next: NextFunction)
   };
 
   if (req.body) req.body = sanitize(req.body);
-  if (req.query) req.query = sanitize(req.query);
-  if (req.params) req.params = sanitize(req.params);
+  if (req.query) {
+    for (const key of Object.keys(req.query)) {
+      if (typeof (req.query as any)[key] === 'string') {
+        (req.query as any)[key] = (req.query as any)[key]
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/javascript:/gi, '')
+          .replace(/on\w+\s*=/gi, '');
+      }
+    }
+  }
+  if (req.params) {
+    for (const key of Object.keys(req.params)) {
+      if (typeof req.params[key] === 'string') {
+        req.params[key] = req.params[key]
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/javascript:/gi, '')
+          .replace(/on\w+\s*=/gi, '');
+      }
+    }
+  }
 
   next();
 };

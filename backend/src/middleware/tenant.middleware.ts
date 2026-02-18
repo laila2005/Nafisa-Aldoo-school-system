@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { sequelize } from '../database/connection.js';
+import { verifyToken } from '../utils/jwt.js';
 
 // Extend Express Request type to include schoolId
 declare global {
@@ -38,6 +39,19 @@ export const tenantMiddleware = async (req: Request, res: Response, next: NextFu
     const publicRoutes = ['/health', '/api/auth/login', '/api/auth/register'];
     if (publicRoutes.some((route) => req.path.startsWith(route))) {
       return next();
+    }
+
+    // Try to extract user from JWT if not already set by auth middleware
+    if (!req.user) {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (token) {
+        try {
+          const decoded = verifyToken(token);
+          req.user = decoded;
+        } catch (e) {
+          // Token invalid — will fail below on missing schoolId
+        }
+      }
     }
 
     // Get school ID from authenticated user

@@ -2,6 +2,7 @@ import React from 'react';
 import { BookOpen, Calendar, Award, TrendingUp, Clock, Bell } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
+import { getStoredUser } from '../../utils/auth';
 
 interface StudentStats {
   totalCourses: number;
@@ -11,6 +12,8 @@ interface StudentStats {
 }
 
 export const StudentDashboard: React.FC = () => {
+  const user = getStoredUser();
+
   // Mock student data - in real app, fetch from API based on logged-in student
   const stats: StudentStats = {
     totalCourses: 6,
@@ -39,14 +42,14 @@ export const StudentDashboard: React.FC = () => {
   ];
 
   return (
-    <Layout user={{ firstName: 'John', lastName: 'Doe', email: 'john.doe@student.com', role: 'STUDENT' }}>
+    <Layout user={user ? { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role } : { firstName: 'Student', lastName: '', email: '', role: 'STUDENT' }}>
       <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Student Dashboard
           </h1>
-          <p className="text-gray-600 mt-2">Welcome back, John! Here's your overview</p>
+          <p className="text-gray-600 mt-2">Welcome back, {user?.firstName || 'Student'}! Here's your overview</p>
         </div>
 
         {/* Stats Cards */}
@@ -115,8 +118,8 @@ export const StudentDashboard: React.FC = () => {
                       <p className="text-xs text-gray-500">{grade.date}</p>
                     </div>
                     <div className={`text-2xl font-bold ${
-                      grade.grade >= 90 ? 'text-green-600' : 
-                      grade.grade >= 80 ? 'text-blue-600' : 
+                      grade.grade >= 90 ? 'text-green-600' :
+                      grade.grade >= 80 ? 'text-blue-600' :
                       'text-yellow-600'
                     }`}>
                       {grade.grade}%
