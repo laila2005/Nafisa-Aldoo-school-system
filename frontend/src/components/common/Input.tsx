@@ -43,13 +43,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         {error && (
-          <p className="text-sm text-red-600 flex items-center gap-1">
+          <p className="text-sm text-red-600 flex items-center gap-1 rtl:flex-row-reverse">
             <span>⚠️</span>
             <span>{error}</span>
           </p>
         )}
         {success && !error && (
-          <p className="text-sm text-green-600 flex items-center gap-1">
+          <p className="text-sm text-green-600 flex items-center gap-1 rtl:flex-row-reverse">
             <span>✓</span>
             <span>Valid</span>
           </p>

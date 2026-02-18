@@ -13,11 +13,18 @@ import {
   UserCog,
   Award,
   Clock,
+  User,
 } from 'lucide-react';
 import SchoolBranding from '../school/SchoolBranding';
 
 interface SidebarProps {
   userRole?: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    role: string;
+    email: string;
+  };
 }
 
 const adminMenuItems = [
@@ -43,7 +50,7 @@ const studentMenuItems = [
   { path: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ userRole = 'ADMIN' }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ userRole = 'ADMIN', user }) => {
   const location = useLocation();
 
   // Determine which menu items to show based on role
@@ -52,8 +59,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole = 'ADMIN' }) => {
   );
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-40">
-      <div className="p-6 border-b border-gray-200">
+    <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-40 rtl:left-auto rtl:right-0 rtl:border-l rtl:border-gray-200">
+      <div className="p-6 border-b border-gray-200 rtl:border-r rtl:border-l-0">
         <SchoolBranding />
       </div>
 
@@ -70,20 +77,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole = 'ADMIN' }) => {
                 isActive
                   ? 'bg-blue-50 text-blue-600 font-medium'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+              } rtl:flex-row-reverse`}
             >
               <Icon className="w-5 h-5" />
-              <span>{item.label}</span>
+              <span className="rtl:text-right">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Role Badge */}
+      {/* User Info */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-        <div className="px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-          <p className="text-xs text-gray-600 font-medium">Logged in as</p>
-          <p className="text-sm font-bold text-blue-600">{userRole}</p>
+        <div className="flex items-center gap-3 px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 rtl:flex-row-reverse">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <User className="w-4 h-4 text-blue-600" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-gray-600 font-medium text-right rtl:text-left">Logged in as</p>
+            <p className="text-sm font-bold text-blue-600 truncate text-right rtl:text-left">
+              {user ? `${user.firstName} ${user.lastName}` : userRole}
+            </p>
+            <p className="text-xs text-gray-500 text-right rtl:text-left">{userRole}</p>
+          </div>
         </div>
       </div>
     </aside>

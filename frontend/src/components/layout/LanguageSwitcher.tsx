@@ -6,8 +6,8 @@ export const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-      <Globe className="w-4 h-4 text-gray-600 ml-2" />
+    <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1 rtl:flex-row-reverse">
+      <Globe className="w-4 h-4 text-gray-600 ml-2 rtl:ml-0 rtl:mr-2" />
       <button
         onClick={() => setLanguage('en')}
         className={`px-3 py-1 rounded text-sm font-medium transition-all ${

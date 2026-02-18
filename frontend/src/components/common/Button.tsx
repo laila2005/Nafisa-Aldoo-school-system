@@ -51,7 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           variantClasses[variant],
           sizeClasses[size],
           fullWidth ? 'w-full' : '',
-          className
+          'rtl:flex-row-reverse'
         )}
         disabled={disabled || isLoading}
         {...props}

@@ -15,10 +15,10 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children, user }) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar userRole={user?.role} />
+      <Sidebar userRole={user?.role} user={user} />
       <Navbar user={user} />
-      
-      <main className="ml-64 mt-[73px] p-8 rtl:ml-0 rtl:mr-64">
+
+      <main className="ml-64 mt-[73px] p-4 sm:p-8 rtl:ml-0 rtl:mr-64">
         <div className="max-w-7xl mx-auto">
           {children}
         </div>

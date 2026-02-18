@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Plus, Edit, Trash2, Eye, Mail, Phone, Calendar, BookOpen, Users, CheckCircle } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Plus, Edit, Trash2, Eye, Mail, Phone, Calendar, BookOpen, Users, CheckCircle, AlertCircle, Check } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import { Table, Column } from '../../components/common/Table';
 import { SearchBar } from '../../components/common/SearchBar';
@@ -7,6 +7,7 @@ import { Pagination } from '../../components/common/Pagination';
 import { Modal, ModalActions } from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import { getTeachers, createTeacher, updateTeacher, deleteTeacher } from '../../services/api';
 
 interface Teacher {
   id: number;
@@ -67,7 +68,9 @@ export const TeachersPage: React.FC = () => {
   const [itemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<string>('lastName');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -107,37 +110,100 @@ export const TeachersPage: React.FC = () => {
     setSortDirection(direction);
   };
 
-  const handleAddTeacher = () => {
-    const newTeacher: Teacher = {
-      id: Math.max(...teachers.map(t => t.id)) + 1,
-      firstName: formData.firstName || '',
-      lastName: formData.lastName || '',
-      email: formData.email || '',
-      phone: formData.phone || '',
-      subjects: formData.subjects || [],
-      hireDate: formData.hireDate || new Date().toISOString().split('T')[0],
-      status: 'active',
-      department: formData.department || '',
-      specialization: formData.specialization || '',
-    };
-    setTeachers([...teachers, newTeacher]);
-    setIsAddModalOpen(false);
-    setFormData({});
+  // Load teachers on component mount
+  useEffect(() => {
+    loadTeachers();
+  }, []);
+
+  const loadTeachers = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getTeachers();
+      if (data && data.length > 0) {
+        setTeachers(data);
+      }
+    } catch (error) {
+      console.error('Failed to load teachers:', error);
+      setMessage({ type: 'error', text: 'Failed to load teachers data' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleEditTeacher = () => {
+  const handleAddTeacher = async () => {
+    try {
+      setMessage(null);
+      const newTeacher = await createTeacher({
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        subjects: formData.subjects || [],
+        hireDate: formData.hireDate || new Date().toISOString().split('T')[0],
+        status: 'active',
+        department: formData.department || '',
+        specialization: formData.specialization || '',
+      });
+
+      setTeachers([...teachers, newTeacher]);
+      setIsAddModalOpen(false);
+      setFormData({});
+      setMessage({ type: 'success', text: 'Teacher added successfully!' });
+
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Failed to add teacher:', error);
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Failed to add teacher. Please try again.'
+      });
+    }
+  };
+
+  const handleEditTeacher = async () => {
     if (!selectedTeacher) return;
-    setTeachers(teachers.map(t => 
-      t.id === selectedTeacher.id ? { ...t, ...formData } : t
-    ));
-    setIsEditModalOpen(false);
-    setSelectedTeacher(null);
-    setFormData({});
+
+    try {
+      setMessage(null);
+      const updatedTeacher = await updateTeacher(selectedTeacher.id, formData);
+
+      setTeachers(teachers.map(t =>
+        t.id === selectedTeacher.id ? updatedTeacher : t
+      ));
+      setIsEditModalOpen(false);
+      setSelectedTeacher(null);
+      setFormData({});
+      setMessage({ type: 'success', text: 'Teacher updated successfully!' });
+
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Failed to update teacher:', error);
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Failed to update teacher. Please try again.'
+      });
+    }
   };
 
-  const handleDeleteTeacher = (id: number) => {
+  const handleDeleteTeacher = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this teacher?')) {
-      setTeachers(teachers.filter(t => t.id !== id));
+      try {
+        setMessage(null);
+        await deleteTeacher(id);
+        setTeachers(teachers.filter(t => t.id !== id));
+        setMessage({ type: 'success', text: 'Teacher deleted successfully!' });
+
+        // Clear message after 3 seconds
+        setTimeout(() => setMessage(null), 3000);
+      } catch (error: any) {
+        console.error('Failed to delete teacher:', error);
+        setMessage({
+          type: 'error',
+          text: error.response?.data?.message || 'Failed to delete teacher. Please try again.'
+        });
+      }
     }
   };
 
@@ -315,13 +381,30 @@ export const TeachersPage: React.FC = () => {
             Manage teaching staff and assignments
           </p>
         </div>
-        <Button
-          variant="primary"
-          icon={<Plus className="w-5 h-5" />}
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          Add Teacher
-        </Button>
+        <div className="flex items-center gap-4">
+          {message && (
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              message.type === 'success'
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {message.type === 'success' ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <AlertCircle className="w-4 h-4" />
+              )}
+              <span className="text-sm font-medium">{message.text}</span>
+            </div>
+          )}
+          <Button
+            variant="primary"
+            icon={<Plus className="w-5 h-5" />}
+            onClick={() => setIsAddModalOpen(true)}
+            disabled={isLoading}
+          >
+            Add Teacher
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

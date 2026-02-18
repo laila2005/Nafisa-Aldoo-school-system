@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Plus, Edit, Trash2, Eye, Mail, Phone, Calendar, Users, CheckCircle, XCircle, GraduationCap } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Plus, Edit, Trash2, Eye, Mail, Phone, Calendar, Users, CheckCircle, XCircle, GraduationCap, AlertCircle, Check } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import { Table, Column } from '../../components/common/Table';
 import { SearchBar } from '../../components/common/SearchBar';
@@ -7,6 +7,7 @@ import { Pagination } from '../../components/common/Pagination';
 import { Modal, ModalActions } from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import { getStudents, createStudent, updateStudent, deleteStudent } from '../../services/api';
 
 interface Student {
   id: number;
@@ -68,7 +69,9 @@ export const StudentsPage: React.FC = () => {
   const [itemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<string>('lastName');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -110,37 +113,134 @@ export const StudentsPage: React.FC = () => {
     setSortDirection(direction);
   };
 
-  const handleAddStudent = () => {
-    const newStudent: Student = {
-      id: Math.max(...students.map(s => s.id)) + 1,
-      firstName: formData.firstName || '',
-      lastName: formData.lastName || '',
-      email: formData.email || '',
-      phone: formData.phone || '',
-      grade: formData.grade || '',
-      enrollmentDate: formData.enrollmentDate || new Date().toISOString().split('T')[0],
-      status: 'active',
-      parentName: formData.parentName || '',
-      parentPhone: formData.parentPhone || '',
-    };
-    setStudents([...students, newStudent]);
-    setIsAddModalOpen(false);
-    setFormData({});
+  // Load students on component mount
+  useEffect(() => {
+    loadStudents();
+  }, []);
+
+  const loadStudents = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getStudents();
+      if (data && data.length > 0) {
+        setStudents(data);
+      }
+    } catch (error) {
+      console.error('Failed to load students:', error);
+      setMessage({ type: 'error', text: 'Failed to load students data' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleEditStudent = () => {
+  const handleAddStudent = async () => {
+    try {
+      setMessage(null);
+
+      // Log the form data being sent
+      console.log('Adding student with data:', {
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        grade: formData.grade || '',
+        enrollmentDate: formData.enrollmentDate || new Date().toISOString().split('T')[0],
+        status: 'active',
+        parentName: formData.parentName || '',
+        parentPhone: formData.parentPhone || '',
+      });
+
+      const newStudent = await createStudent({
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        grade: formData.grade || '',
+        enrollmentDate: formData.enrollmentDate || new Date().toISOString().split('T')[0],
+        status: 'active',
+        parentName: formData.parentName || '',
+        parentPhone: formData.parentPhone || '',
+      });
+
+      console.log('Student added successfully:', newStudent);
+      setStudents([...students, newStudent]);
+      setIsAddModalOpen(false);
+      setFormData({});
+      setMessage({ type: 'success', text: 'Student added successfully!' });
+
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Failed to add student - Full error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error status:', error.response?.status);
+      console.error('Error data:', error.response?.data);
+      console.error('Error message:', error.message);
+
+      let errorMessage = 'Failed to add student. Please try again.';
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 0) {
+        errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+      } else if (error.response?.status === 404) {
+        errorMessage = 'API endpoint not found. Please check the backend URL.';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Server error. Please contact the administrator.';
+      } else if (error.code === 'NETWORK_ERROR') {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+
+      setMessage({
+        type: 'error',
+        text: errorMessage
+      });
+    }
+  };
+
+  const handleEditStudent = async () => {
     if (!selectedStudent) return;
-    setStudents(students.map(s => 
-      s.id === selectedStudent.id ? { ...s, ...formData } : s
-    ));
-    setIsEditModalOpen(false);
-    setSelectedStudent(null);
-    setFormData({});
+
+    try {
+      setMessage(null);
+      const updatedStudent = await updateStudent(selectedStudent.id, formData);
+
+      setStudents(students.map(s =>
+        s.id === selectedStudent.id ? updatedStudent : s
+      ));
+      setIsEditModalOpen(false);
+      setSelectedStudent(null);
+      setFormData({});
+      setMessage({ type: 'success', text: 'Student updated successfully!' });
+
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Failed to update student:', error);
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Failed to update student. Please try again.'
+      });
+    }
   };
 
-  const handleDeleteStudent = (id: number) => {
+  const handleDeleteStudent = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this student?')) {
-      setStudents(students.filter(s => s.id !== id));
+      try {
+        setMessage(null);
+        await deleteStudent(id);
+        setStudents(students.filter(s => s.id !== id));
+        setMessage({ type: 'success', text: 'Student deleted successfully!' });
+
+        // Clear message after 3 seconds
+        setTimeout(() => setMessage(null), 3000);
+      } catch (error: any) {
+        console.error('Failed to delete student:', error);
+        setMessage({
+          type: 'error',
+          text: error.response?.data?.message || 'Failed to delete student. Please try again.'
+        });
+      }
     }
   };
 
@@ -301,13 +401,30 @@ export const StudentsPage: React.FC = () => {
             Manage student records and information
           </p>
         </div>
-        <Button
-          variant="primary"
-          icon={<Plus className="w-5 h-5" />}
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          Add Student
-        </Button>
+        <div className="flex items-center gap-4">
+          {message && (
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              message.type === 'success'
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {message.type === 'success' ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <AlertCircle className="w-4 h-4" />
+              )}
+              <span className="text-sm font-medium">{message.text}</span>
+            </div>
+          )}
+          <Button
+            variant="primary"
+            icon={<Plus className="w-5 h-5" />}
+            onClick={() => setIsAddModalOpen(true)}
+            disabled={isLoading}
+          >
+            Add Student
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

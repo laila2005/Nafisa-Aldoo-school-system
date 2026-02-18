@@ -103,6 +103,35 @@ body[dir="rtl"] {
   font-family: var(--font-family-arabic);
 }
 
+/* RTL Fixes */
+[dir="rtl"] * {
+  font-family: 'Cairo', 'Tajawal', sans-serif;
+}
+[dir="rtl"] .space-x-2 {
+  --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .space-x-4 {
+  --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .space-x-3 {
+  --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .space-x-6 {
+  --tw-space-x-reverse: 1;
+}
+[dir="rtl"] .gap-x-2 {
+  --tw-gap-x-reverse: 1;
+}
+[dir="rtl"] .gap-x-3 {
+  --tw-gap-x-reverse: 1;
+}
+[dir="rtl"] .gap-x-4 {
+  --tw-gap-x-reverse: 1;
+}
+[dir="rtl"] .gap-x-6 {
+  --tw-gap-x-reverse: 1;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
@@ -277,7 +306,7 @@ select:focus-visible {
   body {
     background: white;
   }
-  
+
   .no-print {
     display: none !important;
   }

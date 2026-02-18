@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Download, Users, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, Download, Users, TrendingUp, AlertCircle, Check } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import { getAttendanceByDate, saveAttendance } from '../../services/api';
 
 interface AttendanceRecord {
   studentId: number;
@@ -22,11 +23,78 @@ export const AttendancePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedCourse, setSelectedCourse] = useState('all');
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(mockStudentsForAttendance);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const updateAttendance = (studentId: number, status: AttendanceRecord['status']) => {
     setAttendance(attendance.map(record =>
       record.studentId === studentId ? { ...record, status } : record
     ));
+    setHasChanges(true);
+  };
+
+  // Load attendance data when date or course changes
+  useEffect(() => {
+    loadAttendance();
+  }, [selectedDate, selectedCourse]);
+
+  const loadAttendance = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAttendanceByDate(selectedDate, selectedCourse);
+      if (data && data.length > 0) {
+        setAttendance(data);
+      } else {
+        // Use mock data if no data exists for this date
+        setAttendance(mockStudentsForAttendance);
+      }
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Failed to load attendance:', error);
+      setMessage({ type: 'error', text: 'Failed to load attendance data' });
+      // Fall back to mock data
+      setAttendance(mockStudentsForAttendance);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveAttendance = async () => {
+    try {
+      setIsSaving(true);
+      setMessage(null);
+
+      const attendanceData = {
+        date: selectedDate,
+        courseId: selectedCourse === 'all' ? undefined : selectedCourse,
+        records: attendance.map(record => ({
+          studentId: record.studentId,
+          status: record.status
+        }))
+      };
+
+      await saveAttendance(attendanceData);
+      setHasChanges(false);
+      setMessage({ type: 'success', text: 'Attendance saved successfully!' });
+
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      console.error('Failed to save attendance:', error);
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Failed to save attendance. Please try again.'
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleReset = () => {
+    loadAttendance();
+    setMessage(null);
   };
 
   const stats = {
@@ -203,13 +271,43 @@ export const AttendancePage: React.FC = () => {
             ))}
           </div>
 
-          <div className="mt-6 flex justify-end gap-3">
-            <Button variant="outline">
-              Reset
-            </Button>
-            <Button variant="primary">
-              Save Attendance
-            </Button>
+          <div className="mt-6 flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              {message && (
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                  message.type === 'success'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {message.type === 'success' ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4" />
+                  )}
+                  <span className="text-sm font-medium">{message.text}</span>
+                </div>
+              )}
+              {hasChanges && (
+                <span className="text-sm text-amber-600 font-medium">You have unsaved changes</span>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={handleReset}
+                disabled={isLoading || isSaving}
+              >
+                Reset
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleSaveAttendance}
+                disabled={isLoading || isSaving || !hasChanges}
+                isLoading={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save Attendance'}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

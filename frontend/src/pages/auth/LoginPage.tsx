@@ -92,21 +92,26 @@ export const LoginPage: React.FC = () => {
 
   if (showSchoolSelection) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-          <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">
-            Select Your School
-          </h1>
-          <p className="text-center text-gray-600 mb-8">
-            You belong to multiple schools. Please select one to continue.
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+              <Building2 className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Select Your School
+            </h1>
+            <p className="text-blue-200">
+              You belong to multiple schools. Please select one to continue.
+            </p>
+          </div>
 
           <div className="space-y-3">
             {userSchools.map((school) => (
               <button
                 key={school.id}
                 onClick={() => handleSelectSchool(school)}
-                className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                className="w-full p-4 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/25 transition-all text-left group"
               >
                 <div className="flex items-center gap-3">
                   {school.logo ? (
@@ -116,13 +121,13 @@ export const LoginPage: React.FC = () => {
                       className="w-12 h-12 rounded-lg object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Building2 className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Building2 className="w-6 h-6 text-white" />
                     </div>
                   )}
                   <div>
-                    <p className="font-semibold text-gray-900">{school.name}</p>
-                    <p className="text-sm text-gray-500">{school.code}</p>
+                    <p className="font-semibold text-white">{school.name}</p>
+                    <p className="text-sm text-blue-200">{school.code}</p>
                   </div>
                 </div>
               </button>
@@ -134,43 +139,70 @@ export const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4">
+      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+            <Building2 className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-2">
             School Management System
           </h1>
-          <p className="text-gray-600">Sign in to your account</p>
+          <p className="text-blue-200">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm backdrop-blur-sm">
               {error}
             </div>
           )}
 
-          <Input
-            type="email"
-            label="Email"
-            placeholder="your@email.com"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            icon={<Mail className="w-5 h-5" />}
-            required
-          />
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-blue-200">
+              Email
+              <span className="text-red-400 ml-1">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400">
+                <Mail className="w-5 h-5" />
+              </div>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-300 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:bg-white/15"
+                required
+              />
+            </div>
+          </div>
 
-          <Input
-            type="password"
-            label="Password"
-            placeholder="••••••••"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            icon={<Lock className="w-5 h-5" />}
-            required
-          />
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-blue-200">
+              Password
+              <span className="text-red-400 ml-1">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400">
+                <Lock className="w-5 h-5" />
+              </div>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-300 backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:bg-white/15"
+                required
+              />
+            </div>
+          </div>
 
-          <Button type="submit" disabled={isLoading} className="w-full">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2 inline" />
@@ -179,15 +211,15 @@ export const LoginPage: React.FC = () => {
             ) : (
               'Sign In'
             )}
-          </Button>
+          </button>
 
           <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-blue-200">
               Don't have an account?{' '}
               <button
                 type="button"
                 onClick={() => navigate('/register')}
-                className="text-blue-600 hover:underline font-medium"
+                className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 transition-colors"
               >
                 Register here
               </button>

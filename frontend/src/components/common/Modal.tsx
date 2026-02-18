@@ -85,12 +85,12 @@ export const Modal: React.FC<ModalProps> = ({
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex-1">
               {title && (
-                <h2 id="modal-title" className="text-xl font-bold text-gray-900">
+                <h2 id="modal-title" className="text-xl font-bold text-gray-900 text-right rtl:text-left">
                   {title}
                 </h2>
               )}
               {description && (
-                <p id="modal-description" className="text-sm text-gray-600 mt-1">
+                <p id="modal-description" className="text-sm text-gray-600 mt-1 text-right rtl:text-left">
                   {description}
                 </p>
               )}
@@ -98,7 +98,7 @@ export const Modal: React.FC<ModalProps> = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="ml-4 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                className="ml-4 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100 rtl:ml-0 rtl:mr-4"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -108,13 +108,13 @@ export const Modal: React.FC<ModalProps> = ({
         )}
 
         {/* Content */}
-        <div className="p-6 max-h-[calc(100vh-16rem)] overflow-y-auto">
+        <div className="p-6 max-h-[calc(100vh-16rem)] overflow-y-auto text-right rtl:text-left">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg rtl:flex-row-reverse">
             {footer}
           </div>
         )}
@@ -131,7 +131,7 @@ interface ModalActionsProps {
 
 export const ModalActions: React.FC<ModalActionsProps> = ({ children, className }) => {
   return (
-    <div className={cn('flex items-center justify-end gap-3', className)}>
+    <div className={cn('flex items-center justify-end gap-3 rtl:flex-row-reverse', className)}>
       {children}
     </div>
   );

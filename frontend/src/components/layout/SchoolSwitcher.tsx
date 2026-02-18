@@ -41,25 +41,25 @@ export const SchoolSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors rtl:flex-row-reverse"
       >
         {school?.logo ? (
           <img src={school.logo} alt={school.name} className="w-6 h-6 rounded" />
         ) : (
           <Building2 className="w-5 h-5 text-gray-600" />
         )}
-        <span className="text-sm font-medium text-gray-900">{school?.name}</span>
+        <span className="text-sm font-medium text-gray-900 text-right rtl:text-left">{school?.name}</span>
         <ChevronDown className="w-4 h-4 text-gray-600" />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+        <div className="absolute top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50 rtl:left-0 rtl:right-auto">
           <div className="p-2">
             {schools.map((s) => (
               <button
                 key={s.id}
                 onClick={() => handleSelectSchool(s)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors rtl:flex-row-reverse"
               >
                 {s.logo ? (
                   <img src={s.logo} alt={s.name} className="w-8 h-8 rounded" />
@@ -68,7 +68,7 @@ export const SchoolSwitcher: React.FC = () => {
                     <Building2 className="w-4 h-4 text-blue-600" />
                   </div>
                 )}
-                <div className="text-left">
+                <div className="text-left rtl:text-right">
                   <p className="font-medium text-gray-900 text-sm">{s.name}</p>
                   <p className="text-xs text-gray-500">{s.code}</p>
                 </div>
