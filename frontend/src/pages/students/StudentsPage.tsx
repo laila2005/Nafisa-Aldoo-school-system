@@ -62,6 +62,75 @@ const mockStudents: Student[] = [
   },
 ];
 
+// Move form component outside to prevent re-renders
+interface StudentFormProps {
+  formData: Partial<Student>;
+  setFormData: (data: Partial<Student>) => void;
+}
+
+const StudentForm: React.FC<StudentFormProps> = ({ formData, setFormData }) => (
+  <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-4">
+      <Input
+        label="First Name"
+        value={formData.firstName || ''}
+        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+        required
+      />
+      <Input
+        label="Last Name"
+        value={formData.lastName || ''}
+        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+        required
+      />
+    </div>
+    <Input
+      label="Email"
+      type="email"
+      value={formData.email || ''}
+      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+      icon={<Mail className="w-5 h-5" />}
+      required
+    />
+    <Input
+      label="Phone"
+      type="tel"
+      value={formData.phone || ''}
+      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+      icon={<Phone className="w-5 h-5" />}
+    />
+    <Input
+      label="Grade"
+      value={formData.grade || ''}
+      onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+      required
+    />
+    <Input
+      label="Enrollment Date"
+      type="date"
+      value={formData.enrollmentDate || ''}
+      onChange={(e) => setFormData({ ...formData, enrollmentDate: e.target.value })}
+      icon={<Calendar className="w-5 h-5" />}
+      required
+    />
+    <div className="border-t pt-4">
+      <h4 className="font-semibold mb-4">Parent Information</h4>
+      <Input
+        label="Parent Name"
+        value={formData.parentName || ''}
+        onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
+      />
+      <Input
+        label="Parent Phone"
+        type="tel"
+        value={formData.parentPhone || ''}
+        onChange={(e) => setFormData({ ...formData, parentPhone: e.target.value })}
+        icon={<Phone className="w-5 h-5" />}
+      />
+    </div>
+  </div>
+);
+
 export const StudentsPage: React.FC = () => {
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const [searchQuery, setSearchQuery] = useState('');
@@ -326,69 +395,6 @@ export const StudentsPage: React.FC = () => {
     },
   ];
 
-  const StudentForm: React.FC = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="First Name"
-          value={formData.firstName || ''}
-          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-          required
-        />
-        <Input
-          label="Last Name"
-          value={formData.lastName || ''}
-          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-          required
-        />
-      </div>
-      <Input
-        label="Email"
-        type="email"
-        value={formData.email || ''}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        icon={<Mail className="w-5 h-5" />}
-        required
-      />
-      <Input
-        label="Phone"
-        type="tel"
-        value={formData.phone || ''}
-        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        icon={<Phone className="w-5 h-5" />}
-      />
-      <Input
-        label="Grade"
-        value={formData.grade || ''}
-        onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-        required
-      />
-      <Input
-        label="Enrollment Date"
-        type="date"
-        value={formData.enrollmentDate || ''}
-        onChange={(e) => setFormData({ ...formData, enrollmentDate: e.target.value })}
-        icon={<Calendar className="w-5 h-5" />}
-        required
-      />
-      <div className="border-t pt-4">
-        <h4 className="font-semibold mb-4">Parent Information</h4>
-        <Input
-          label="Parent Name"
-          value={formData.parentName || ''}
-          onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-        />
-        <Input
-          label="Parent Phone"
-          type="tel"
-          value={formData.parentPhone || ''}
-          onChange={(e) => setFormData({ ...formData, parentPhone: e.target.value })}
-          icon={<Phone className="w-5 h-5" />}
-        />
-      </div>
-    </div>
-  );
-
   return (
     <Layout user={{ firstName: 'Admin', lastName: 'User', email: 'admin@school.com', role: 'ADMIN' }}>
       <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
@@ -529,7 +535,7 @@ export const StudentsPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <StudentForm />
+        <StudentForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       {/* Edit Student Modal */}
@@ -549,7 +555,7 @@ export const StudentsPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <StudentForm />
+        <StudentForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       {/* View Student Modal */}

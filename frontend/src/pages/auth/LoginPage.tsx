@@ -212,19 +212,6 @@ export const LoginPage: React.FC = () => {
               'Sign In'
             )}
           </button>
-
-          <div className="text-center mt-4">
-            <p className="text-sm text-blue-200">
-              Don't have an account?{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/register')}
-                className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 transition-colors"
-              >
-                Register here
-              </button>
-            </p>
-          </div>
         </form>
       </div>
     </div>

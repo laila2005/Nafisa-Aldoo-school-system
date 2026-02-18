@@ -64,6 +64,73 @@ const mockCourses: Course[] = [
   },
 ];
 
+// Move form component outside to prevent re-renders
+interface CourseFormProps {
+  formData: Partial<Course>;
+  setFormData: (data: Partial<Course>) => void;
+}
+
+const CourseForm: React.FC<CourseFormProps> = ({ formData, setFormData }) => (
+  <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-4">
+      <Input
+        label="Course Code"
+        value={formData.code || ''}
+        onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+        required
+      />
+      <Input
+        label="Credits"
+        type="number"
+        value={formData.credits || ''}
+        onChange={(e) => setFormData({ ...formData, credits: parseInt(e.target.value) || 0 })}
+        required
+      />
+    </div>
+    <Input
+      label="Course Name"
+      value={formData.name || ''}
+      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      icon={<BookOpen className="w-5 h-5" />}
+      required
+    />
+    <Input
+      label="Description"
+      value={formData.description || ''}
+      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+    />
+    <div className="grid grid-cols-2 gap-4">
+      <Input
+        label="Teacher"
+        value={formData.teacher || ''}
+        onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
+        required
+      />
+      <Input
+        label="Grade"
+        value={formData.grade || ''}
+        onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+        required
+      />
+    </div>
+    <Input
+      label="Schedule"
+      value={formData.schedule || ''}
+      onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
+      icon={<Calendar className="w-5 h-5" />}
+      hint="e.g., Mon, Wed, Fri 9:00 AM"
+    />
+    <Input
+      label="Capacity"
+      type="number"
+      value={formData.capacity || ''}
+      onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 0 })}
+      icon={<Users className="w-5 h-5" />}
+      required
+    />
+  </div>
+);
+
 export const CoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>(mockCourses);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,7 +138,7 @@ export const CoursesPage: React.FC = () => {
   const [itemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<string>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -124,7 +191,7 @@ export const CoursesPage: React.FC = () => {
 
   const handleEditCourse = () => {
     if (!selectedCourse) return;
-    setCourses(courses.map(c => 
+    setCourses(courses.map(c =>
       c.id === selectedCourse.id ? { ...c, ...formData } : c
     ));
     setIsEditModalOpen(false);
@@ -237,67 +304,6 @@ export const CoursesPage: React.FC = () => {
       ),
     },
   ];
-
-  const CourseForm: React.FC = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="Course Code"
-          value={formData.code || ''}
-          onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-          required
-        />
-        <Input
-          label="Credits"
-          type="number"
-          value={formData.credits || ''}
-          onChange={(e) => setFormData({ ...formData, credits: parseInt(e.target.value) })}
-          required
-        />
-      </div>
-      <Input
-        label="Course Name"
-        value={formData.name || ''}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        icon={<BookOpen className="w-5 h-5" />}
-        required
-      />
-      <Input
-        label="Description"
-        value={formData.description || ''}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-      />
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="Teacher"
-          value={formData.teacher || ''}
-          onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
-          required
-        />
-        <Input
-          label="Grade"
-          value={formData.grade || ''}
-          onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-          required
-        />
-      </div>
-      <Input
-        label="Schedule"
-        value={formData.schedule || ''}
-        onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
-        icon={<Calendar className="w-5 h-5" />}
-        hint="e.g., Mon, Wed, Fri 9:00 AM"
-      />
-      <Input
-        label="Capacity"
-        type="number"
-        value={formData.capacity || ''}
-        onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
-        icon={<Users className="w-5 h-5" />}
-        required
-      />
-    </div>
-  );
 
   return (
     <Layout user={{ firstName: 'Admin', lastName: 'User', email: 'admin@school.com', role: 'ADMIN' }}>
@@ -414,7 +420,7 @@ export const CoursesPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <CourseForm />
+        <CourseForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       <Modal
@@ -432,7 +438,7 @@ export const CoursesPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <CourseForm />
+        <CourseForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       <Modal

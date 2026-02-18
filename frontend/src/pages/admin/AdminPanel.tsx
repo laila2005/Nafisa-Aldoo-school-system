@@ -118,7 +118,7 @@ const BillingTab = () => (
   <div className="bg-white rounded-lg shadow-md p-6">
     <h2 className="text-xl font-bold mb-4">Billing & Subscription</h2>
     <p className="text-gray-600">Manage your subscription, billing, and payment methods.</p>
-    
+
     <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
       {['FREE', 'BASIC', 'PREMIUM'].map((plan) => (
         <div key={plan} className="border-2 border-gray-200 rounded-lg p-6">
@@ -140,7 +140,7 @@ const BrandingTab = () => (
   <div className="bg-white rounded-lg shadow-md p-6">
     <h2 className="text-xl font-bold mb-4">School Branding</h2>
     <p className="text-gray-600 mb-6">Customize your school's logo, colors, and appearance.</p>
-    
+
     <div className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">School Logo</label>

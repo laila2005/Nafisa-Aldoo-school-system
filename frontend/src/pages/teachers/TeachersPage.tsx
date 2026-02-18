@@ -61,6 +61,75 @@ const mockTeachers: Teacher[] = [
   },
 ];
 
+// Move form component outside to prevent re-renders
+interface TeacherFormProps {
+  formData: Partial<Teacher>;
+  setFormData: (data: Partial<Teacher>) => void;
+}
+
+const TeacherForm: React.FC<TeacherFormProps> = ({ formData, setFormData }) => (
+  <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-4">
+      <Input
+        label="First Name"
+        value={formData.firstName || ''}
+        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+        required
+      />
+      <Input
+        label="Last Name"
+        value={formData.lastName || ''}
+        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+        required
+      />
+    </div>
+    <Input
+      label="Email"
+      type="email"
+      value={formData.email || ''}
+      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+      icon={<Mail className="w-5 h-5" />}
+      required
+    />
+    <Input
+      label="Phone"
+      type="tel"
+      value={formData.phone || ''}
+      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+      icon={<Phone className="w-5 h-5" />}
+    />
+    <div className="grid grid-cols-2 gap-4">
+      <Input
+        label="Department"
+        value={formData.department || ''}
+        onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+        required
+      />
+      <Input
+        label="Specialization"
+        value={formData.specialization || ''}
+        onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+        icon={<BookOpen className="w-5 h-5" />}
+        required
+      />
+    </div>
+    <Input
+      label="Subjects (comma-separated)"
+      value={formData.subjects?.join(', ') || ''}
+      onChange={(e) => setFormData({ ...formData, subjects: e.target.value.split(',').map(s => s.trim()).filter(s => s) })}
+      hint="e.g., Mathematics, Physics, Computer Science"
+    />
+    <Input
+      label="Hire Date"
+      type="date"
+      value={formData.hireDate || ''}
+      onChange={(e) => setFormData({ ...formData, hireDate: e.target.value })}
+      icon={<Calendar className="w-5 h-5" />}
+      required
+    />
+  </div>
+);
+
 export const TeachersPage: React.FC = () => {
   const [teachers, setTeachers] = useState<Teacher[]>(mockTeachers);
   const [searchQuery, setSearchQuery] = useState('');
@@ -307,69 +376,6 @@ export const TeachersPage: React.FC = () => {
     },
   ];
 
-  const TeacherForm: React.FC = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="First Name"
-          value={formData.firstName || ''}
-          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-          required
-        />
-        <Input
-          label="Last Name"
-          value={formData.lastName || ''}
-          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-          required
-        />
-      </div>
-      <Input
-        label="Email"
-        type="email"
-        value={formData.email || ''}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        icon={<Mail className="w-5 h-5" />}
-        required
-      />
-      <Input
-        label="Phone"
-        type="tel"
-        value={formData.phone || ''}
-        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        icon={<Phone className="w-5 h-5" />}
-      />
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="Department"
-          value={formData.department || ''}
-          onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-          required
-        />
-        <Input
-          label="Specialization"
-          value={formData.specialization || ''}
-          onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-          icon={<BookOpen className="w-5 h-5" />}
-          required
-        />
-      </div>
-      <Input
-        label="Subjects (comma-separated)"
-        value={formData.subjects?.join(', ') || ''}
-        onChange={(e) => setFormData({ ...formData, subjects: e.target.value.split(',').map(s => s.trim()) })}
-        hint="e.g., Mathematics, Physics, Computer Science"
-      />
-      <Input
-        label="Hire Date"
-        type="date"
-        value={formData.hireDate || ''}
-        onChange={(e) => setFormData({ ...formData, hireDate: e.target.value })}
-        icon={<Calendar className="w-5 h-5" />}
-        required
-      />
-    </div>
-  );
-
   return (
     <Layout user={{ firstName: 'Admin', lastName: 'User', email: 'admin@school.com', role: 'ADMIN' }}>
       <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50 to-purple-50 min-h-screen">
@@ -502,7 +508,7 @@ export const TeachersPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <TeacherForm />
+        <TeacherForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       <Modal
@@ -520,7 +526,7 @@ export const TeachersPage: React.FC = () => {
           </ModalActions>
         }
       >
-        <TeacherForm />
+        <TeacherForm formData={formData} setFormData={setFormData} />
       </Modal>
 
       <Modal

@@ -26,7 +26,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({
   const setSchool = (newSchool: School) => {
     setSchoolState(newSchool);
     localStorage.setItem('currentSchool', JSON.stringify(newSchool));
-    
+
     // Apply school branding
     if (newSchool.settings) {
       document.documentElement.style.setProperty(
