@@ -76,12 +76,14 @@ export const loginUser = async (email: string, password: string, req?: Request) 
       }
     );
 
-    // Update last login
-    await user.update({
-      lastLogin: new Date(),
-      // Store last login IP if request available
-      ...(req && { lastLoginIp: req.ip }),
-    });
+    // Update last login (non-critical, may fail due to DB triggers)
+    try {
+      await user.update({
+        lastLogin: new Date(),
+      });
+    } catch (e) {
+      console.warn('Failed to update lastLogin (non-critical):', (e as Error).message);
+    }
 
     return {
       token,
